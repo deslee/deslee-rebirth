@@ -7,6 +7,8 @@ class App extends React.Component {
       <ul>
         <li><Link to="index">Index</Link></li>
         <li><Link to="example-basic">example-basic</Link></li>
+        <li><Link to="example-lazy">example-lazy</Link></li>
+        <li><Link to="example-data">example-data</Link></li>
       </ul>
       <RouteHandler {...this.props} />
     </div>)

@@ -61,7 +61,7 @@ export default function(release) {
   const appConfig = Object.assign({
     entry: {
       app: './app/app.js',
-      vendors: ['react/addons', 'react-router', 'flux']
+      vendors: ['react/addons', 'react-router', 'flux', 'underscore', 'superagent', 'eventemitter3', 'lodash', 'fastclick', 'route-parser']
     },
     output: {
       filename: 'app.js',
@@ -79,7 +79,6 @@ export default function(release) {
       return ['.bin'].indexOf(x) === -1;
     })
     .forEach(function(mod) {
-      console.log(mod)
       nodeModules[mod] = 'commonjs ' + mod;
     });
   nodeModules['react/addons'] = 'commonjs react/addons';

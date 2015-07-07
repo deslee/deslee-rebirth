@@ -8,7 +8,7 @@ var AppDispatcher = Object.assign(new Dispatcher(), {
    * @param {object} action The details of the action, including the action's
    * type and additional data coming from the server.
    */
-  handleServerAction() {
+  handleServerAction(action) {
     var payload = {
       source: PayloadSources.SERVER_ACTION,
       action

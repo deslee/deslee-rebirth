@@ -13,7 +13,6 @@ class AsyncElement extends React.Component {
     }
 
     try {
-      console.log(this.bundle.toString())
       this.bundle(component => {
           this.setState({
             loadedComponent: component

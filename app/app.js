@@ -1,9 +1,10 @@
 'use strict';
 import 'babel/polyfill';
 import React from 'react/addons';
-import Router, {DefaultRoute, Route} from 'react-router';
+import Router, {DefaultRoute, Route, NotFoundRoute} from 'react-router';
 
 import AppDispatcher from './AppDispatcher.js';
+import DataStore from './store/DataStore.js';
 import ActionTypes from './constants/ActionTypes.js';
 
 import App from "./components/App/App.js"
@@ -11,6 +12,9 @@ import AsyncElement from "./helpers/AsyncElement.js"
 
 import IndexPage from "./components/IndexPage/IndexPage.js"
 import ExamplePage from "./components/ExamplePage/ExamplePage.js"
+import DataPage from "./components/DataPage/DataPage.js"
+import NotFoundPage from "./components/NotFoundPage/NotFoundPage.js"
+
 
 class LazyExamplePage extends AsyncElement {
   constructor() {
@@ -24,6 +28,8 @@ var routes = (
     <DefaultRoute name="index" handler={IndexPage} />
     <Route name="example-basic" path="example-basic" handler={ExamplePage} />
     <Route name="example-lazy" path="example-lazy" handler={LazyExamplePage} />
+    <Route name="example-data" path="example-data" handler={DataPage} />
+    <NotFoundRoute handler={NotFoundPage} />
   </Route>
 );
 
@@ -38,3 +44,4 @@ if (typeof document !== 'undefined') {
     React.render(<Root />, document.getElementById('container'));
   });
 }
+

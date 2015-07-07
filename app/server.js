@@ -6,6 +6,9 @@ import path from 'path';
 import express from 'express';
 
 import * as app from './app.js';
+import AppDispatcher from './AppDispatcher.js';
+import ActionTypes from './constants/ActionTypes.js';
+import DataStore from './store/DataStore.js';
 
 const server = express();
 server.set('port', (process.env.PORT || 5000));
@@ -13,31 +16,69 @@ server.set('port', (process.env.PORT || 5000));
 const templateFile = './public/index.html';
 const template = _.template(fs.readFileSync(templateFile, 'utf8'));
 
-function isomorphicRequest(req, res) {
+function isomorphicRequest(req, res, next) {
   app.render(req.path, body => {
     try {
       let data = {
         body,
         description: '',
         css: [],
+        initialData: req.initialData ? JSON.stringify(req.initialData) : null
       };
+
       let html = template(data);
       res.send(html);
     } catch (err) {
-      next(err);
+      console.log(err);
+      next();
     }
   })
 }
 
-server.get(/^\/$|^\/index\.html/, function(req, res) {
-  isomorphicRequest(req, res)
+// simulates a database dictionary or document
+function getData(id) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (id === 'example-data') {
+        resolve({
+          id,
+          value: id + ' data'
+        });
+      }
+      else {
+        reject('not found');
+      }
+    }, 200);
+  })
+}
+
+server.get(/^\/$|^\/index\.html/, isomorphicRequest);
+server.get('/:id', (req, res, next) => {
+  getData(req.params.id).then(data => {
+    /*AppDispatcher.handleServerAction({
+      type: ActionTypes.RECEIVE_DATA,
+      id: req.params.id,
+      data: data
+    });*/
+    var initial = {}
+    initial[data.id] = data.value
+    DataStore.data = initial;
+    req.initialData = initial;
+    next();
+  }).catch(err => {
+    if (err !== 'not found' && err.stack) {
+      console.log('er', err.stack)
+    }
+    next();
+  });
 });
 server.use(express.static('public'));
-server.get('*', function(req, res) {
-  isomorphicRequest(req, res)
+server.get('/data/:id', (req, res, next) => {
+  getData(req.params.id).then(data => {
+    res.send(data);
+  })
 });
-
-app.render('/example-lazy', console.log)
+server.get('*', isomorphicRequest);
 
 server.listen(server.get('port'), () => {
   if (process.send) {
