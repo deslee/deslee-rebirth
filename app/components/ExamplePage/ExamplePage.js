@@ -1,13 +1,15 @@
 import React from 'react/addons';
 import styles from './ExamplePage.scss';
 import withStyles from '../../decorators/withStyles.js';
-
-console.log(styles);
+import ExamplePageComponent from './ExamplePageComponent.js';
 
 @withStyles(styles)
 class ExamplePage extends React.Component {
   render() {
-    return <p className="ExamplePage">Example</p>
+    return (<div className="ExamplePage">
+      Example
+      <ExamplePageComponent />
+    </div>)
   }
 }
 

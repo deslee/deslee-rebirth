@@ -32,8 +32,8 @@ function withStyles(styles) {
             document.getElementsByTagName('head')[0].appendChild(style);
             this.refCount++;
           }
-        } else if (this.props.callbacks && this.props.callbacks.onInsertCss) {
-          this.props.callbacks.onInsertCss(css);
+        } else if (typeof GLOBAL !== 'undefined' && GLOBAL.app_callbacks && GLOBAL.app_callbacks.onInsertCss) {
+          GLOBAL.app_callbacks.onInsertCss(css);
         }
       }.bind(this);
     }
@@ -42,8 +42,8 @@ function withStyles(styles) {
       if (canUseDOM) {
         invariant(styles.use, `The style-loader must be configured with reference-counted API.`);
         styles.use();
-      } else if (this.props.callbacks && this.props.callbacks.onInsertCss) {
-        this.props.callbacks.onInsertCss(styles.toString());
+      } else if (typeof GLOBAL !== 'undefined' && GLOBAL.app_callbacks && GLOBAL.app_callbacks.onInsertCss) {
+        GLOBAL.app_callbacks.onInsertCss(styles.toString());
       }
     }
 

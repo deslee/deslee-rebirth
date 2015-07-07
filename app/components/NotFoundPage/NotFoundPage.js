@@ -2,8 +2,8 @@ import React from 'react/addons';
 
 class NotFoundPage extends React.Component {
   componentWillMount() {
-    if (this.props.callbacks && this.props.callbacks.onPageNotFound) {
-      this.props.callbacks.onPageNotFound()
+    if (typeof GLOBAL !== 'undefined' && GLOBAL.app_callbacks && GLOBAL.app_callbacks.onPageNotFound) {
+      GLOBAL.app_callbacks.onPageNotFound();
     }
   }
   render() {

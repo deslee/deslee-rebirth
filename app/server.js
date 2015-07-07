@@ -22,7 +22,7 @@ function isomorphicRequest(req, res, next) {
       let data = {
         body,
         description: '',
-        css: status.css,
+        css: status.css.join('\n'),
         initialData: req.initialData ? JSON.stringify(req.initialData) : null
       };
 

@@ -39,10 +39,15 @@ export function render(path, cb) {
   Router.run(routes, path, Root => {
     var pageNotFound = false;
     var css = [];
-    var html = React.renderToString(<Root callbacks={{
-      onPageNotFound: () => pageNotFound = true,
-      onInsertCss: value => css.push(value)
-    }} />);
+    if (typeof GLOBAL !== 'undefined') {
+      GLOBAL.app_callbacks = {
+        onPageNotFound: () => pageNotFound = true,
+        onInsertCss: value => {
+          css.push(value)
+        }
+      };
+    }
+    var html = React.renderToString(<Root />);
     cb(html, {pageNotFound, css});
   })
 }
