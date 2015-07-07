@@ -11,8 +11,8 @@ if (canUseDOM) {
   var container = document.getElementById('container');
   var dataString;
   if (container && (dataString = container.getAttribute('data-initial'))) {
-    var obj = JSON.parse(dataString);
-    initialData = obj;
+    let obj = JSON.parse(dataString);
+    Object.assign(initialData, obj)
   }
 }
 

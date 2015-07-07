@@ -35,6 +35,17 @@ var routes = (
   </Route>
 );
 
+export var staticPaths = [];
+function processRoute(route) {
+  if (route.props.path && route.props.path.indexOf(':') == -1 && route.props.path !== '/') {
+    staticPaths.push(route.props.path);
+  }
+  if (route.props.children) {
+    route.props.children.forEach(processRoute);
+  }
+}
+processRoute(routes);
+
 export function render(path, cb) {
   Router.run(routes, path, Root => {
     var pageNotFound = false;

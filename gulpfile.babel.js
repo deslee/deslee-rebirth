@@ -79,10 +79,10 @@ gulp.task('bundle', cb => {
   }
 });
 
-var blogIndex = [];
-gulp.task('blogIndex', () => {
+gulp.task('blogIndex', (end) => {
+  var blogIndex = [];
   src.blog = 'data/blog/**';
-  return gulp.src(src.blog)
+  gulp.src(src.blog)
     .pipe(through.obj(function(chunk, enc, callback) {
       if(chunk.isBuffer()) {
         let contents = chunk.contents.toString('utf8');
@@ -96,6 +96,10 @@ gulp.task('blogIndex', () => {
     }))
     .on('data', function(data) {
       blogIndex.push(data)
+    }).on('end', () => {
+      fs.writeFile(path.join(BUILD_DIR, 'data', 'blogIndex.json'), JSON.stringify(blogIndex), () => {
+        end();
+      });
     });
 });
 
@@ -109,7 +113,7 @@ gulp.task('move:data', () => {
     .pipe(gulp.dest(path.join(BUILD_DIR, 'data')));
 });
 
-gulp.task('move:index', ['blogIndex'], () => {
+gulp.task('move:index', () => {
   src.index = [
     path.join(APP_DIR, 'index.html')
   ];
@@ -118,12 +122,13 @@ gulp.task('move:index', ['blogIndex'], () => {
   watch(src.blog, ['move:index']);
 
   return gulp.src(src.index)
-    .pipe(vinylMap((code, fileName) => {
+    /*.pipe(vinylMap((code, fileName) => {
       code = code.toString();
+      let json = JSON.stringify(blogIndex);
       var idx = code.indexOf('<body>') + '<body>'.length;
-      code = code.substring(0, idx) + `\n<div id="blogIndex" data-blogIndex='${JSON.stringify(blogIndex)}'></div>` + code.slice(idx);
+      code = code.substring(0, idx) + `\n<div id="blogIndex" data-blogIndex='${json}'></div>` + code.slice(idx);
       return code
-    }))
+    }))*/
     .pipe(gulp.dest(PUBLIC_DIR));
 });
 
@@ -182,7 +187,7 @@ export default JSON.parse('${json}');
 });
 
 gulp.task('build', cb => {
-  runSequence(['move', 'compile:sass', 'bundle', 'data'], cb)
+  runSequence(['move', 'blogIndex', 'compile:sass', 'bundle', 'data'], cb)
 });
 
 gulp.task('default', done => {

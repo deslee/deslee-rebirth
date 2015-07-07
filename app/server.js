@@ -19,6 +19,8 @@ server.set('port', (process.env.PORT || 5000));
 const templateFile = './public/index.html';
 const template = _.template(fs.readFileSync(templateFile, 'utf8'));
 
+const blogIndex = JSON.parse(fs.readFileSync('./data/blogIndex.json'));
+
 var dataCache = {
 };
 
@@ -39,6 +41,13 @@ fs.readdirSync('./data/').forEach(file => {
 });
 
 function isomorphicRequest(req, res, next) {
+
+  if (!req.initialData) {
+    req.initialData = {};
+  }
+  req.initialData.blogIndex = blogIndex;
+  DataStore.data = req.initialData;
+
   app.render(req.path, (body, status) => {
     try {
       let data = {
@@ -90,10 +99,13 @@ server.get('/data/:id', (req, res, next) => {
 });
 server.use(express.static('public'));
 server.get('/:id', (req, res, next) => {
+  if (app.staticPaths.indexOf(req.params.id) !== -1) {
+    next();
+  }
+
   getData(req.params.id).then(data => {
     var initial = {};
     initial[data.id] = data.value;
-    DataStore.data = initial;
     req.initialData = initial;
     next();
   }).catch(err => {
@@ -102,7 +114,6 @@ server.get('/:id', (req, res, next) => {
     }
     var initial = {};
     initial[req.params.id] = null;
-    DataStore.data = initial;
     req.initialData = initial;
     req.notFound = true;
     next();
