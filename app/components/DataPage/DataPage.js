@@ -16,7 +16,7 @@ export default class DataPage extends DataElement {
     var data = this.state.dataStore[this.props.params.id];
     if (data && data.body) {
       return (<div className="DataPage" dangerouslySetInnerHTML={{__html: data.body}}></div>)
-    } else if (data == null) {
+    } else if (data == null && data !== undefined) {
       return <NotFoundPage />
     } else {
       return <div className="DataPage">loading</div>

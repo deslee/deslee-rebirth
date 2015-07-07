@@ -22,8 +22,8 @@ const template = _.template(fs.readFileSync(templateFile, 'utf8'));
 var dataCache = {
 };
 
-fs.readdirSync('./public/data/').forEach(file => {
-  let contents = fs.readFileSync(path.join('./public/data/', file), {encoding: 'utf8'});
+fs.readdirSync('./data/').forEach(file => {
+  let contents = fs.readFileSync(path.join('./data/', file), {encoding: 'utf8'});
   let content = fm(contents);
   let ext = path.extname(file);
   switch(ext) {

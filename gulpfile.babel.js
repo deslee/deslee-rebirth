@@ -37,7 +37,9 @@ function watch(pattern, tasks) {
 
 gulp.task('clean', done => {
   del(['.tmp', 'build/*', '!build/.git'], {dot: true}, () => {
-    mkdirp('build/public/data', done);
+    mkdirp('build/public', () => {
+      mkdirp('build/data', done);
+    });
   });
 });
 
@@ -104,7 +106,7 @@ gulp.task('move:data', () => {
   ];
   watch(src.data, ['move:data']);
   return gulp.src(src.data)
-    .pipe(gulp.dest(path.join(BUILD_DIR, 'public', 'data')));
+    .pipe(gulp.dest(path.join(BUILD_DIR, 'data')));
 });
 
 gulp.task('move:index', ['blogIndex'], () => {

@@ -7,6 +7,7 @@ class App extends React.Component {
     return (<div className="AppPage">
       <ul>
         <li><Link to="index">Index</Link></li>
+        <li><Link to="data" params={{id: 'about'}}>About</Link></li>
         <li><Link to="example-basic">example-basic</Link></li>
         <li><Link to="example-lazy">example-lazy</Link></li>
       </ul>
