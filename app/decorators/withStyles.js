@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react/addons';
-import invariant from '../../node_modules/react/lib/invariant';
-import { canUseDOM } from '../../node_modules/react/lib/ExecutionEnvironment';
+import invariant from 'react/lib/invariant';
+import { canUseDOM } from 'react/lib/ExecutionEnvironment';
 
 let count = 0;
 

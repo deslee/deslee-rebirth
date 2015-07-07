@@ -70,7 +70,7 @@ export default function(release) {
   let appConfig = merge({}, config, {
     entry: {
       app: './app/app.js',
-      vendors: ['react/addons', 'react-router', 'flux', 'underscore', 'superagent', 'eventemitter3', 'lodash', 'fastclick', 'route-parser']
+      vendors: ['react/addons', 'react/lib/keyMirror', 'react/lib/invariant', 'react/lib/ExecutionEnvironment', 'react-router', 'flux', 'underscore', 'superagent', 'eventemitter3', 'lodash', 'fastclick', 'route-parser']
     },
     output: {
       filename: 'app.js',
@@ -78,8 +78,11 @@ export default function(release) {
     },
     devtool: 'source-map',
     plugins: [
-      new webpack.optimize.CommonsChunkPlugin('vendors', 'vendors.js')
-    ]
+      new webpack.optimize.CommonsChunkPlugin('vendors', 'vendors.js'),
+      new webpack.optimize.OccurenceOrderPlugin()
+    ].concat(release ? [
+        new webpack.optimize.UglifyJsPlugin()
+      ] : [])
   });
 
   var nodeModules = {};

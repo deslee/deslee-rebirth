@@ -21,6 +21,7 @@ const src = Object.create(null);
 const BUILD_DIR = './build';
 const PUBLIC_DIR = './build/public';
 const APP_DIR = './app';
+const DEBUG = process.env.NODE_ENV !== 'production';
 
 var watch_array = [];
 function watch(pattern, tasks) {
@@ -38,12 +39,11 @@ gulp.task('clean', done => {
 
 gulp.task('bundle', cb => {
   const configGenerator = require('./config/webpack.js');
-  let config = configGenerator(false);
+  let config = configGenerator(!DEBUG);
   const compiler = webpack(config);
-  compiler.watch({
-    aggregateTimeout: 100
-  }, (err, stats) => {
-    let verbose = false;
+
+  var statReport = (err, stats) => {
+    let verbose = DEBUG;
 
     // print stats
     console.log(stats.toString({
@@ -61,7 +61,16 @@ gulp.task('bundle', cb => {
       cb();
       cb = null;
     }
-  });
+  };
+
+  if (DEBUG) {
+    compiler.watch({
+      aggregateTimeout: 100
+    }, statReport);
+  }
+  else {
+    compiler.run(statReport);
+  }
 });
 
 gulp.task('move:index', () => {
@@ -99,6 +108,10 @@ gulp.task('watch', cb => {
   cb();
 });
 
+gulp.task('build', cb => {
+  runSequence(['move', 'compile:sass', 'bundle'], cb)
+});
+
 gulp.task('default', done => {
-  runSequence(['clean'], ['move', 'compile:sass', 'bundle'], ['watch'], done)
+  runSequence(['clean'], ['build'], ['watch'], done)
 });

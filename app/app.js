@@ -57,4 +57,3 @@ if (canUseDOM) {
     React.render(<Root />, document.getElementById('container'));
   });
 }
-
