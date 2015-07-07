@@ -30,7 +30,7 @@ var routes = (
     <DefaultRoute name="index" handler={IndexPage} />
     <Route name="example-basic" path="example-basic" handler={ExamplePage} />
     <Route name="example-lazy" path="example-lazy" handler={LazyExamplePage} />
-    <Route name="example-data" path="example-data" handler={DataPage} />
+    <Route name="data" path="/:id" handler={DataPage} />
     <NotFoundRoute handler={NotFoundPage} />
   </Route>
 );

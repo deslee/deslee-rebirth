@@ -4,13 +4,15 @@
   "dependencies": {
     "eventemitter3": "^1.1.1",
     "express": "^4.13.1",
+    "fastclick": "^1.0.6",
     "flux": "^2.0.3",
+    "jade": "^1.11.0",
     "lodash": "^3.10.0",
+    "marked": "^0.3.3",
     "react": "^0.13.3",
     "react-router": "^0.13.3",
     "route-parser": "0.0.3",
     "superagent": "^1.2.0",
-    "fastclick": "^1.0.6",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
@@ -21,6 +23,8 @@
     "bundle-loader": "^0.5.4",
     "css-loader": "^0.15.1",
     "del": "^1.2.0",
+    "fm": "^0.4.0",
+    "front-matter": "^1.0.0",
     "gulp": "^3.9.0",
     "gulp-changed": "^1.2.1",
     "gulp-debug": "^2.0.1",
@@ -38,6 +42,8 @@
     "sass-loader": "^1.0.2",
     "source-map-support": "^0.3.2",
     "style-loader": "^0.12.3",
+    "through2": "^2.0.0",
+    "vinyl-map": "^1.0.1",
     "webpack": "^1.10.1"
   },
   "scripts": {

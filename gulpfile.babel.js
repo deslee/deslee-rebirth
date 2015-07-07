@@ -14,6 +14,10 @@ import del from 'del';
 import mkdirp from 'mkdirp';
 import webpack from 'webpack';
 import path from 'path';
+import through from 'through2';
+import fm from 'front-matter';
+import fs from 'fs';
+import vinylMap from 'vinyl-map';
 
 const $ = loadPlugins();
 const src = Object.create(null);
@@ -33,7 +37,7 @@ function watch(pattern, tasks) {
 
 gulp.task('clean', done => {
   del(['.tmp', 'build/*', '!build/.git'], {dot: true}, () => {
-    mkdirp('build/public', done);
+    mkdirp('build/public/data', done);
   });
 });
 
@@ -73,19 +77,56 @@ gulp.task('bundle', cb => {
   }
 });
 
-gulp.task('move:index', () => {
+var blogIndex = [];
+gulp.task('blogIndex', () => {
+  src.blog = 'data/blog/**';
+  return gulp.src(src.blog)
+    .pipe(through.obj(function(chunk, enc, callback) {
+      if(chunk.isBuffer()) {
+        let contents = chunk.contents.toString('utf8');
+        let metadata = fm(contents);
+        var data = Object.assign({slug: path.basename(chunk.path).split('.')[0], blog: true}, metadata.attributes);
+        if (!metadata.attributes.draft) {
+          this.push(data)
+        }
+      }
+      callback()
+    }))
+    .on('data', function(data) {
+      blogIndex.push(data)
+    });
+});
+
+gulp.task('move:data', () => {
+  src.data = [
+    'data/blog/**',
+    'data/pages/**'
+  ];
+  watch(src.data, ['move:data']);
+  return gulp.src(src.data)
+    .pipe(gulp.dest(path.join(BUILD_DIR, 'public', 'data')));
+});
+
+gulp.task('move:index', ['blogIndex'], () => {
   src.index = [
     path.join(APP_DIR, 'index.html')
   ];
 
   watch(src.index, ['move:index']);
+  watch(src.blog, ['move:index']);
 
   return gulp.src(src.index)
+    .pipe(vinylMap((code, fileName) => {
+      code = code.toString();
+      var idx = code.indexOf('<body>') + '<body>'.length;
+      code = code.substring(0, idx) + `\n<div id="blogIndex" data-blogIndex='${JSON.stringify(blogIndex)}'></div>` + code.slice(idx);
+      return code
+    }))
     .pipe(gulp.dest(PUBLIC_DIR));
 });
 
 gulp.task('move', done => {
-  runSequence(['move:index'], done)
+  runSequence(['move:index', 'move:data'], done)
 });
 
 gulp.task('compile:sass', () => {
@@ -108,8 +149,38 @@ gulp.task('watch', cb => {
   cb();
 });
 
+gulp.task('data', cb => {
+  var index = [];
+  src.blog = 'data*/**';
+  gulp.src(src.blog)
+    .pipe(through.obj(function(chunk, enc, callback) {
+      if(chunk.isBuffer()) {
+        var isBlog = chunk.relative.split(path.sep).length >= 2 ? chunk.relative.split(path.sep)[1].toLowerCase() === 'blog' : false;
+        let contents = chunk.contents.toString('utf8');
+        let metadata = fm(contents);
+        var data = Object.assign({slug: path.basename(chunk.path).split('.')[0], blog: isBlog}, metadata.attributes);
+        if (!metadata.attributes.draft) {
+          this.push(data)
+        }
+      }
+      callback()
+    }))
+    .on('data', function(data) {
+      index.push(data)
+    })
+    .on('end', function() {
+      let json = JSON.stringify(index);
+      let contents = `
+// gulp generated file
+export default JSON.parse('${json}');
+`;
+      cb()
+      //fs.writeFile('src/content/Blog.js', contents, cb);
+    })
+});
+
 gulp.task('build', cb => {
-  runSequence(['move', 'compile:sass', 'bundle'], cb)
+  runSequence(['move', 'compile:sass', 'bundle', 'data'], cb)
 });
 
 gulp.task('default', done => {

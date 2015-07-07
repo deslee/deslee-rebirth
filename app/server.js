@@ -3,7 +3,10 @@ import 'babel/polyfill';
 import fs from 'fs';
 import _ from 'lodash';
 import path from 'path';
+import fm from 'front-matter';
 import express from 'express';
+import marked from 'marked';
+import jade from 'jade';
 
 import * as app from './app.js';
 import AppDispatcher from './AppDispatcher.js';
@@ -15,6 +18,25 @@ server.set('port', (process.env.PORT || 5000));
 
 const templateFile = './public/index.html';
 const template = _.template(fs.readFileSync(templateFile, 'utf8'));
+
+var dataCache = {
+};
+
+fs.readdirSync('./public/data/').forEach(file => {
+  let contents = fs.readFileSync(path.join('./public/data/', file), {encoding: 'utf8'});
+  let content = fm(contents);
+  let ext = path.extname(file);
+  switch(ext) {
+    case '.md':
+      content.body = marked(content.body);
+      break;
+    case '.jade':
+      content.body = jade.render(content.body, null, '  ');
+      break;
+  }
+  let id = path.basename(file, ext);
+  dataCache[id] = content;
+});
 
 function isomorphicRequest(req, res, next) {
   app.render(req.path, (body, status) => {
@@ -28,7 +50,7 @@ function isomorphicRequest(req, res, next) {
 
       let html = template(data);
 
-      if (status.pageNotFound) {
+      if (status.pageNotFound || req.notFound) {
         res.status(404);
       }
 
@@ -44,10 +66,11 @@ function isomorphicRequest(req, res, next) {
 function getData(id) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      if (id === 'example-data') {
+      var value = dataCache[id];
+      if (value) {
         resolve({
           id,
-          value: id + ' data'
+          value
         });
       }
       else {
@@ -58,14 +81,16 @@ function getData(id) {
 }
 
 server.get(/^\/$|^\/index\.html/, isomorphicRequest);
+server.get('/data/:id', (req, res, next) => {
+  getData(req.params.id).then(data => {
+    res.send(data);
+  }).catch(err => {
+    res.status(404).end();
+  })
+});
 server.use(express.static('public'));
 server.get('/:id', (req, res, next) => {
   getData(req.params.id).then(data => {
-    /*AppDispatcher.handleServerAction({
-     type: ActionTypes.RECEIVE_DATA,
-     id: req.params.id,
-     data: data
-     });*/
     var initial = {};
     initial[data.id] = data.value;
     DataStore.data = initial;
@@ -75,13 +100,13 @@ server.get('/:id', (req, res, next) => {
     if (err !== 'not found' && err.stack) {
       console.log('er', err.stack)
     }
+    var initial = {};
+    initial[req.params.id] = null;
+    DataStore.data = initial;
+    req.initialData = initial;
+    req.notFound = true;
     next();
   });
-});
-server.get('/data/:id', (req, res, next) => {
-  getData(req.params.id).then(data => {
-    res.send(data);
-  })
 });
 server.get('*', isomorphicRequest);
 
