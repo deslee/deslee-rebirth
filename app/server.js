@@ -53,13 +53,15 @@ function getData(id) {
 }
 
 server.get(/^\/$|^\/index\.html/, isomorphicRequest);
+server.use(express.static('public'));
 server.get('/:id', (req, res, next) => {
+  console.log('test', req.params.id)
   getData(req.params.id).then(data => {
     /*AppDispatcher.handleServerAction({
-      type: ActionTypes.RECEIVE_DATA,
-      id: req.params.id,
-      data: data
-    });*/
+     type: ActionTypes.RECEIVE_DATA,
+     id: req.params.id,
+     data: data
+     });*/
     var initial = {}
     initial[data.id] = data.value
     DataStore.data = initial;
@@ -72,7 +74,6 @@ server.get('/:id', (req, res, next) => {
     next();
   });
 });
-server.use(express.static('public'));
 server.get('/data/:id', (req, res, next) => {
   getData(req.params.id).then(data => {
     res.send(data);
