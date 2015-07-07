@@ -8,6 +8,7 @@
 import 'babel/polyfill';
 import path from 'path';
 import autoprefixer from 'autoprefixer-core';
+import fs from 'fs';
 
 var webpack = require('webpack');
 
@@ -72,8 +73,29 @@ export default function(release) {
     ]
   }, config);
 
+  var nodeModules = {};
+  fs.readdirSync('node_modules')
+    .filter(function(x) {
+      return ['.bin'].indexOf(x) === -1;
+    })
+    .forEach(function(mod) {
+      console.log(mod)
+      nodeModules[mod] = 'commonjs ' + mod;
+    });
+  nodeModules['react/addons'] = 'commonjs react/addons';
+
   const serverConfig = Object.assign({
+    entry: './app/server.js',
+    target: 'node',
+    output: {
+      path: './build',
+      filename: 'server.js',
+    },
+    externals: nodeModules,
+    plugins: [
+      new webpack.IgnorePlugin(/\.(css|less)$/)
+    ]
   }, config);
 
-  return [appConfig/*, serverConfig*/]
+  return [appConfig, serverConfig]
 };
