@@ -13,7 +13,7 @@ export default class DataPage extends DataElement {
   }
   render() {
     var data = this.state.dataStore['example-data'];
-    return (<div>
+    return (<div className="DataPage">
       <p>DataPage</p>
       <p>Data: {data?data:"Loading"}</p>
     </div>)

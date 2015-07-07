@@ -1,9 +1,12 @@
 import React from 'react/addons';
 import {RouteHandler} from 'react-router';
+import styles from './IndexPage.scss';
+import withStyles from '../../decorators/withStyles.js';
 
+@withStyles(styles)
 class IndexPage extends React.Component {
   render() {
-    return <p>Index Page</p>
+    return <p className="IndexPage">Index Page</p>
   }
 }
 

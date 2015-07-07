@@ -9,6 +9,7 @@ import 'babel/polyfill';
 import path from 'path';
 import autoprefixer from 'autoprefixer-core';
 import fs from 'fs';
+import merge from 'lodash/object/merge';
 
 var webpack = require('webpack');
 
@@ -34,7 +35,11 @@ const AUTOPREFIXER_BROWSERS = [
  * @return {object} Webpack configuration
  */
 export default function(release) {
-  const config = {
+
+  let STYLE_LOADER = 'style/useable';
+  let CSS_LOADER = release ? 'css-loader?minimize' : 'css-loader';
+
+  let config = {
     cache: !release,
     debug: !release,
     devtool: false,
@@ -52,13 +57,17 @@ export default function(release) {
         {
           test: /\.jsx?$/,
           loader: 'babel-loader'
-        }
+        },
+        {
+          test: /\.scss/,
+          loader: `${STYLE_LOADER}!${CSS_LOADER}!postcss-loader!sass-loader`
+        },
       ]
     },
     postcss: [autoprefixer(AUTOPREFIXER_BROWSERS)]
   };
 
-  const appConfig = Object.assign({
+  let appConfig = merge({}, config, {
     entry: {
       app: './app/app.js',
       vendors: ['react/addons', 'react-router', 'flux', 'underscore', 'superagent', 'eventemitter3', 'lodash', 'fastclick', 'route-parser']
@@ -71,7 +80,7 @@ export default function(release) {
     plugins: [
       new webpack.optimize.CommonsChunkPlugin('vendors', 'vendors.js')
     ]
-  }, config);
+  });
 
   var nodeModules = {};
   fs.readdirSync('node_modules')
@@ -83,7 +92,7 @@ export default function(release) {
     });
   nodeModules['react/addons'] = 'commonjs react/addons';
 
-  const serverConfig = Object.assign({
+  let serverConfig = merge({}, config, {
     entry: './app/server.js',
     target: 'node',
     output: {
@@ -92,9 +101,18 @@ export default function(release) {
     },
     externals: nodeModules,
     plugins: [
-      new webpack.IgnorePlugin(/\.(css|less)$/)
+      /*new webpack.IgnorePlugin(/\.(css|less)$/)*/
     ]
-  }, config);
+  });
+
+  serverConfig.module.loaders = config.module.loaders.map(function(loader) {
+    // Remove style-loader
+    var newLoader = {
+      test: loader.test,
+      loader: loader.loader.replace(STYLE_LOADER + '!', '')
+    };
+    return newLoader;
+  });
 
   return [appConfig, serverConfig]
 };

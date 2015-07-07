@@ -2,11 +2,12 @@ import EventEmitter from 'eventemitter3';
 import AppDispatcher from '../AppDispatcher.js';
 import ActionTypes from '../constants/ActionTypes.js';
 import PayloadSources from '../constants/PayloadSources';
+import { canUseDOM } from '../../node_modules/react/lib/ExecutionEnvironment';
 
 const CHANGE_EVENT = 'change';
 
 var initialData = {}
-if (typeof document !== 'undefined') {
+if (canUseDOM) {
   var container = document.getElementById('container');
   var dataString;
   if (container && (dataString = container.getAttribute('data-initial'))) {

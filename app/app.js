@@ -15,6 +15,8 @@ import ExamplePage from "./components/ExamplePage/ExamplePage.js"
 import DataPage from "./components/DataPage/DataPage.js"
 import NotFoundPage from "./components/NotFoundPage/NotFoundPage.js"
 
+import { canUseDOM } from '../node_modules/react/lib/ExecutionEnvironment';
+
 
 class LazyExamplePage extends AsyncElement {
   constructor() {
@@ -35,11 +37,17 @@ var routes = (
 
 export function render(path, cb) {
   Router.run(routes, path, Root => {
-    cb(React.renderToString(<Root />));
+    var pageNotFound = false;
+    var css = [];
+    var html = React.renderToString(<Root callbacks={{
+      onPageNotFound: () => pageNotFound = true,
+      onInsertCss: value => css.push(value)
+    }} />);
+    cb(html, {pageNotFound, css});
   })
 }
 
-if (typeof document !== 'undefined') {
+if (canUseDOM) {
   Router.run(routes, Router.HistoryLocation, Root => {
     React.render(<Root />, document.getElementById('container'));
   });

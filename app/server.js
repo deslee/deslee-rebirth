@@ -17,16 +17,21 @@ const templateFile = './public/index.html';
 const template = _.template(fs.readFileSync(templateFile, 'utf8'));
 
 function isomorphicRequest(req, res, next) {
-  app.render(req.path, body => {
+  app.render(req.path, (body, status) => {
     try {
       let data = {
         body,
         description: '',
-        css: [],
+        css: status.css,
         initialData: req.initialData ? JSON.stringify(req.initialData) : null
       };
 
       let html = template(data);
+
+      if (status.pageNotFound) {
+        res.status(404);
+      }
+
       res.send(html);
     } catch (err) {
       console.log(err);
@@ -55,15 +60,14 @@ function getData(id) {
 server.get(/^\/$|^\/index\.html/, isomorphicRequest);
 server.use(express.static('public'));
 server.get('/:id', (req, res, next) => {
-  console.log('test', req.params.id)
   getData(req.params.id).then(data => {
     /*AppDispatcher.handleServerAction({
      type: ActionTypes.RECEIVE_DATA,
      id: req.params.id,
      data: data
      });*/
-    var initial = {}
-    initial[data.id] = data.value
+    var initial = {};
+    initial[data.id] = data.value;
     DataStore.data = initial;
     req.initialData = initial;
     next();
