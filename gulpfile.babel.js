@@ -87,6 +87,7 @@ gulp.task('compile:sass', () => {
   watch(src.sass, ['compile:sass']);
 
   return gulp.src(src.sass)
+    .pipe($.plumber())
     .pipe($.sass())
     .pipe(gulp.dest(PUBLIC_DIR));
 });

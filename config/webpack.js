@@ -5,10 +5,22 @@
 
 'use strict';
 
-
+import 'babel/polyfill';
 import path from 'path';
+import autoprefixer from 'autoprefixer-core';
 
 var webpack = require('webpack');
+
+const AUTOPREFIXER_BROWSERS = [
+  'Android 2.3',
+  'Android >= 4',
+  'Chrome >= 20',
+  'Firefox >= 24',
+  'Explorer >= 8',
+  'iOS >= 6',
+  'Opera >= 12',
+  'Safari >= 6'
+];
 
 /**
  * Get configuration for Webpack
@@ -20,37 +32,15 @@ var webpack = require('webpack');
  * a release mode, false otherwise
  * @return {object} Webpack configuration
  */
-module.exports = function(release) {
-  return {
-    entry: {
-      app: './app/app.js',
-      vendors: ['react/addons', 'react-router', 'flux']
-    },
-
-    output: {
-      filename: 'app.js',
-      path: path.resolve('build/public')
-    },
-
+export default function(release) {
+  const config = {
     cache: !release,
     debug: !release,
     devtool: false,
-
     stats: {
       colors: true,
       reasons: !release
     },
-
-    plugins: (release ? [
-      new webpack.DefinePlugin({'process.env.NODE_ENV': '"production"'}),
-      new webpack.optimize.DedupePlugin(),
-      new webpack.optimize.UglifyJsPlugin(),
-      new webpack.optimize.OccurenceOrderPlugin(),
-      new webpack.optimize.AggressiveMergingPlugin()
-    ] : []).concat([
-        // defaults
-        new webpack.optimize.CommonsChunkPlugin('vendors', 'vendors.js')
-      ]),
 
     resolve: {
       extensions: ['', '.webpack.js', '.web.js', '.js', '.jsx']
@@ -63,6 +53,27 @@ module.exports = function(release) {
           loader: 'babel-loader'
         }
       ]
-    }
+    },
+    postcss: [autoprefixer(AUTOPREFIXER_BROWSERS)]
   };
+
+  const appConfig = Object.assign({
+    entry: {
+      app: './app/app.js',
+      vendors: ['react/addons', 'react-router', 'flux']
+    },
+    output: {
+      filename: 'app.js',
+      path: path.resolve('build/public')
+    },
+    devtool: 'source-map',
+    plugins: [
+      new webpack.optimize.CommonsChunkPlugin('vendors', 'vendors.js')
+    ]
+  }, config);
+
+  const serverConfig = Object.assign({
+  }, config);
+
+  return [appConfig/*, serverConfig*/]
 };

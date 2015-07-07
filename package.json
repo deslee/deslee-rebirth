@@ -2,25 +2,37 @@
   "name": "deslee-rebirth",
   "version": "0.0.0",
   "dependencies": {
+    "director": "^1.2.8",
+    "express": "^4.13.1",
     "flux": "^2.0.3",
+    "lodash": "^3.10.0",
     "react": "^0.13.3",
-    "react-router": "^0.13.3"
+    "react-router": "^0.13.3",
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
+    "autoprefixer-core": "^5.2.1",
     "babel": "^5.6.14",
     "babel-core": "^5.6.15",
     "babel-loader": "^5.3.1",
+    "bundle-loader": "^0.5.4",
+    "css-loader": "^0.15.1",
     "del": "^1.2.0",
     "gulp": "^3.9.0",
     "gulp-changed": "^1.2.1",
     "gulp-debug": "^2.0.1",
     "gulp-gh-pages": "^0.5.2",
     "gulp-load-plugins": "^0.10.0",
+    "gulp-plumber": "^1.0.1",
     "gulp-sass": "^2.0.3",
     "gulp-util": "^3.0.6",
     "mkdirp": "^0.5.1",
     "node-libs-browser": "^0.5.2",
+    "postcss": "^4.1.14",
+    "postcss-loader": "^0.5.1",
     "run-sequence": "^1.1.1",
+    "source-map-support": "^0.3.2",
+    "style-loader": "^0.12.3",
     "webpack": "^1.10.1"
   },
   "scripts": {
