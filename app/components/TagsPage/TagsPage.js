@@ -6,7 +6,11 @@ import PostsPage from '../PostsPage/PostsPage.js';
 import DataStore from '../../store/DataStore.js';
 
 class TagsPage {
-
+  componentWillMount() {
+    if (typeof GLOBAL !== 'undefined' && GLOBAL.app_callbacks && GLOBAL.app_callbacks.onSetTitle) {
+      GLOBAL.app_callbacks.onSetTitle(`Posts tagged with "${this.props.params.tags}"`)
+    }
+  }
   render() {
     return (<section className="posts">
       <h1>Posts tagged with "{this.props.params.tags}"</h1>

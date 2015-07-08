@@ -41,7 +41,6 @@ fs.readdirSync('./data/').forEach(file => {
 });
 
 function isomorphicRequest(req, res, next) {
-
   if (!req.initialData) {
     req.initialData = {};
   }
@@ -54,7 +53,8 @@ function isomorphicRequest(req, res, next) {
         body,
         description: '',
         css: status.css.join('\n'),
-        initialData: req.initialData ? JSON.stringify(req.initialData) : null
+        initialData: req.initialData ? JSON.stringify(req.initialData) : null,
+        pageTitle: status.pageTitle
       };
 
       let html = template(data);

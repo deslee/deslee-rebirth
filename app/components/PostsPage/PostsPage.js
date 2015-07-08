@@ -2,7 +2,10 @@ import React, { PropTypes } from 'react/addons';
 import {Link} from 'react-router';
 import moment from 'moment';
 import Tags from "../Tags/Tags.js";
+import styles from './PostsPage.scss';
+import withStyles from '../../decorators/withStyles.js';
 
+@withStyles(styles)
 class PostsPage {
   static propTypes = {
     posts: PropTypes.array.isRequired
@@ -17,10 +20,10 @@ class PostsPage {
         // generate the datetime
         var m = moment(new Date(post.date));
         var time = post.date ? <time dateTime={m.format('YYYY-MM-DD')}>{m.format('YYYY-MM-DD')}</time> : undefined;
-        return (<div className="post" key={post.slug}>
+        return (<div className="post border-bottom" key={post.slug}>
           <h2><Link to="data" params={{id: post.slug}}>{post.title}</Link></h2>
-          <Tags tags={post.tags} />
-          {time}
+            {time}
+            <Tags tags={post.tags} />
         </div>);
       })}</section>);
   }

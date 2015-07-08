@@ -1,0 +1,7 @@
+.post {
+  padding-bottom: 1.75em;
+  &:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+}

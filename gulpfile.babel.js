@@ -79,6 +79,11 @@ gulp.task('bundle', cb => {
   }
 });
 
+gulp.task('move:favicon', () => {
+  return gulp.src('app/favicon.ico')
+  .pipe(gulp.dest(path.join(BUILD_DIR, 'public')));
+});
+
 gulp.task('blogIndex', (end) => {
   var blogIndex = [];
   src.blog = 'data/blog/**';
@@ -113,6 +118,17 @@ gulp.task('move:data', () => {
     .pipe(gulp.dest(path.join(BUILD_DIR, 'data')));
 });
 
+gulp.task('move:assets', () => {
+  src.assets = [
+    'app/assets*/**'
+  ];
+
+  watch(src.assets, ['move:assets']);
+
+  return gulp.src(src.assets)
+    .pipe(gulp.dest(PUBLIC_DIR));
+});
+
 gulp.task('move:index', () => {
   src.index = [
     path.join(APP_DIR, 'index.html')
@@ -132,8 +148,9 @@ gulp.task('move:index', () => {
     .pipe(gulp.dest(PUBLIC_DIR));
 });
 
-gulp.task('move', done => {
-  runSequence(['move:index', 'move:data'], done)
+gulp.task('move:css', () => {
+  return gulp.src('node_modules/basscss/css/basscss*.css')
+  .pipe(gulp.dest(path.join(BUILD_DIR, 'public')));
 });
 
 gulp.task('compile:sass', () => {
@@ -181,9 +198,13 @@ gulp.task('data', cb => {
 // gulp generated file
 export default JSON.parse('${json}');
 `;
-      cb()
+      cb();
       //fs.writeFile('src/content/Blog.js', contents, cb);
     })
+});
+
+gulp.task('move', done => {
+  runSequence(['move:assets', 'move:index', 'move:data', 'move:css'], done)
 });
 
 gulp.task('build', cb => {

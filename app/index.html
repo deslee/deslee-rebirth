@@ -3,19 +3,22 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>deslee rebirth</title>
+    <title><%= pageTitle %></title>
     <base href="/" />
+    <link rel="stylesheet" href="basscss.min.css" />
     <link rel="stylesheet" href="style.css" />
     <meta name="description" content="<%- description %>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style id="css"><%= css %></style>
   </head>
+  <script type="text/javascript">
+    var appFluxInitialData = <%= initialData %>
+  </script>
   <body>
     <!--[if lt IE 8]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
-    <h1>Test App</h1>
-    <div id="container" data-initial='<%= initialData %>'><%= body %></div>
+    <div id="container" class="flex"><%= body %></div>
     <script src="vendors.js"></script>
     <script src="app.js"></script>
   </body>

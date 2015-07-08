@@ -6,13 +6,10 @@ import { canUseDOM } from '../../node_modules/react/lib/ExecutionEnvironment';
 
 const CHANGE_EVENT = 'change';
 
-var initialData = {}
+var initialData = {};
 if (canUseDOM) {
-  var container = document.getElementById('container');
-  var dataString;
-  if (container && (dataString = container.getAttribute('data-initial'))) {
-    let obj = JSON.parse(dataString);
-    Object.assign(initialData, obj)
+  if (typeof appFluxInitialData === 'object') {
+    initialData = appFluxInitialData;
   }
 }
 

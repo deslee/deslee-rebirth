@@ -70,13 +70,27 @@ export default function(release) {
   let appConfig = merge({}, config, {
     entry: {
       app: './app/app.js',
-      vendors: ['react/addons', 'react/lib/keyMirror', 'react/lib/invariant', 'react/lib/ExecutionEnvironment', 'react-router', 'flux', 'underscore', 'superagent', 'eventemitter3', 'lodash', 'fastclick', 'route-parser']
+      vendors: [
+        'react/addons',
+        'react/lib/keyMirror',
+        'react/lib/invariant',
+        'react/lib/ExecutionEnvironment',
+        'react-router',
+        'flux',
+        'underscore',
+        'superagent',
+        'eventemitter3',
+        'lodash',
+        'fastclick',
+        'route-parser',
+        'moment'
+      ]
     },
     output: {
       filename: 'app.js',
       path: path.resolve('build/public')
     },
-    devtool: 'source-map',
+    devtool: release ? false : 'source-map',
     plugins: [
       new webpack.optimize.CommonsChunkPlugin('vendors', 'vendors.js'),
       new webpack.optimize.OccurenceOrderPlugin()

@@ -1,3 +1,41 @@
+@import "styles/fonts";
+
+
 html {
   color: #000;
+}
+
+html, body, #container {
+  min-height: 100vh;
+}
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Roboto Slab", serif;
+  font-weight: 300;
+}
+
+a {
+  color: #0074d9;
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.hover-pointer {
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.dark-gray {
+  color: #888;
+}
+
+pre {
+  overflow-x: auto;
 }

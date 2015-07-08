@@ -2,6 +2,7 @@
   "name": "deslee-rebirth",
   "version": "0.0.0",
   "dependencies": {
+    "basscss": "^7.0.0",
     "eventemitter3": "^1.1.1",
     "express": "^4.13.1",
     "fastclick": "^1.0.6",
