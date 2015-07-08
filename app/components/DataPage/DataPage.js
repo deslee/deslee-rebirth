@@ -11,14 +11,18 @@ export default class DataPage extends DataElement {
   }
   componentWillMount() {
     super.componentWillMount();
-    DataActions.requestData(this.props.params.id);
+    if (!this.state.dataStore[this.props.params.id]) {
+      DataActions.requestData(this.props.params.id);
+    }
     if (typeof GLOBAL !== 'undefined' && GLOBAL.app_callbacks && GLOBAL.app_callbacks.onSetTitle) {
       GLOBAL.app_callbacks.onSetTitle(this.props.params.id)
     }
   }
   componentWillReceiveProps(props) {
     if (this.props.params.id !== props.params.id) {
-      DataActions.requestData(props.params.id);
+      if (!this.state.dataStore[this.props.params.id]) {
+        DataActions.requestData(this.props.params.id);
+      }
     }
   }
   render() {
