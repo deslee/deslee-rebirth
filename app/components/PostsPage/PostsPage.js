@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react/addons';
 import {Link} from 'react-router';
 import moment from 'moment';
+import Tags from "../Tags/Tags.js";
 
 class PostsPage {
   static propTypes = {
@@ -18,6 +19,7 @@ class PostsPage {
         var time = post.date ? <time dateTime={m.format('YYYY-MM-DD')}>{m.format('YYYY-MM-DD')}</time> : undefined;
         return (<div className="post" key={post.slug}>
           <h2><Link to="data" params={{id: post.slug}}>{post.title}</Link></h2>
+          <Tags tags={post.tags} />
           {time}
         </div>);
       })}</section>);

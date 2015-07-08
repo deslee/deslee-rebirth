@@ -14,6 +14,7 @@ import IndexPage from "./components/IndexPage/IndexPage.js"
 import ExamplePage from "./components/ExamplePage/ExamplePage.js"
 import DataPage from "./components/DataPage/DataPage.js"
 import NotFoundPage from "./components/NotFoundPage/NotFoundPage.js"
+import TagsPage from "./components/TagsPage/TagsPage.js"
 
 import { canUseDOM } from '../node_modules/react/lib/ExecutionEnvironment';
 
@@ -30,7 +31,8 @@ var routes = (
     <DefaultRoute name="index" handler={IndexPage} />
     <Route name="example-basic" path="example-basic" handler={ExamplePage} />
     <Route name="example-lazy" path="example-lazy" handler={LazyExamplePage} />
-    <Route name="data" path="/:id" handler={DataPage} />
+    <Route name="tags-page" path="tags/:tags" handler={TagsPage} />
+    <Route name="data" path=":id" handler={DataPage} />
     <NotFoundRoute handler={NotFoundPage} />
   </Route>
 );
