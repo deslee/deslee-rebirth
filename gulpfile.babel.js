@@ -204,7 +204,7 @@ export default JSON.parse('${json}');
 });
 
 gulp.task('move', done => {
-  runSequence(['move:assets', 'move:index', 'move:data', 'move:css'], done)
+  runSequence(['move:assets', 'move:index', 'move:data', 'move:css', 'move:favicon'], done)
 });
 
 gulp.task('build', cb => {

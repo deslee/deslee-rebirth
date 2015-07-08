@@ -18,8 +18,11 @@ class PostsPage {
         return moment(new Date(b.date)).format('X') - moment(new Date(a.date)).format('X')
       }).map(function(post) {
         // generate the datetime
-        var m = moment(new Date(post.date));
-        var time = post.date ? <time dateTime={m.format('YYYY-MM-DD')}>{m.format('YYYY-MM-DD')}</time> : undefined;
+        var time;
+        if (post.date) {
+          var m = moment(new Date(post.date));
+          time = <time className="mr1" dateTime={m.format('YYYY-MM-DD')}>{m.format('YYYY-MM-DD')}</time>;
+        }
         return (<div className="post border-bottom" key={post.slug}>
           <h2><Link to="data" params={{id: post.slug}}>{post.title}</Link></h2>
             {time}

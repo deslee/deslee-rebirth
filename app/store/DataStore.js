@@ -7,11 +7,6 @@ import { canUseDOM } from '../../node_modules/react/lib/ExecutionEnvironment';
 const CHANGE_EVENT = 'change';
 
 var initialData = {};
-/*if (canUseDOM) {
-  if (typeof appFluxInitialData === 'object') {
-    initialData = appFluxInitialData;
-  }
-}*/
 
 var DataStore = Object.assign({}, EventEmitter.prototype, {
   data: initialData,
@@ -62,8 +57,8 @@ function serverActions(action) {
       if (!action.err && action.data) {
         DataStore.data[action.data.id] = action.data.value;
         DataStore.emitChange();
-        break;
       }
+      break;
   }
 }
 function viewAction(action) {

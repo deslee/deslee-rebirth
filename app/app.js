@@ -101,6 +101,7 @@ if (canUseDOM) {
     Router.run(routes, Router.HistoryLocation, Root => {
       React.render(<Root />, document.getElementById('container'));
     });
+    DataActions.requestCache();
   });
 
 }

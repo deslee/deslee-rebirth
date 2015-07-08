@@ -17,10 +17,10 @@ export default class DataElement extends React.Component {
     }
   }
   componentWillMount() {
-    this._dataStoreCallBack = this.dataEvent.bind(this);
-    DataStore.onChange(this._dataStoreCallBack);
+    this.state._dataStoreCallBack = this.dataEvent.bind(this);
+    DataStore.onChange(this.state._dataStoreCallBack);
   }
   componentWillUnmount() {
-    DataStore.off(this._dataStoreCallBack);
+    DataStore.off(this.state._dataStoreCallBack);
   }
 }

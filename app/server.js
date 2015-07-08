@@ -85,11 +85,16 @@ function isomorphicRequest(req, res, next) {
 
 // '/data/:id'
 function apiRequest(req, res, next) {
-  getData(req.params.id).then(data => {
-    res.send(data);
-  }).catch(err => {
-    res.status(404).end();
-  })
+  if (req.params.id == 'dataCache') {
+    res.send(dataCache);
+  }
+  else {
+    getData(req.params.id).then(data => {
+      res.send(data);
+    }).catch(err => {
+      res.status(404).end();
+    })
+  }
 }
 
 // '/:id'
