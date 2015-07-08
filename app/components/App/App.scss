@@ -1,9 +1,10 @@
-.main, .sidebar {
-  padding: 1em;
+.main {
+  padding: 0 1em;
 }
 
 .sidebar {
   text-align: center;
+  padding: 1em 1em 0;
 }
 
 @media only screen and (min-width: 52em) {

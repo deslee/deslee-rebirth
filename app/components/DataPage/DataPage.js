@@ -3,6 +3,7 @@ import DataStore from '../../store/DataStore.js';
 import DataActions from '../../actions/DataActions.js';
 import DataElement from '../../helpers/DataElement.js';
 import NotFoundPage from "../NotFoundPage/NotFoundPage.js"
+import Loading from "../Loading/Loading.js";
 
 export default class DataPage extends DataElement {
   constructor() {
@@ -35,7 +36,7 @@ export default class DataPage extends DataElement {
     } else if (data == null && data !== undefined) {
       return <NotFoundPage />
     } else {
-      return <div className="DataPage">loading</div>
+      return <Loading />
     }
   }
 }
