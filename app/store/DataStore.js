@@ -7,11 +7,11 @@ import { canUseDOM } from '../../node_modules/react/lib/ExecutionEnvironment';
 const CHANGE_EVENT = 'change';
 
 var initialData = {};
-if (canUseDOM) {
+/*if (canUseDOM) {
   if (typeof appFluxInitialData === 'object') {
     initialData = appFluxInitialData;
   }
-}
+}*/
 
 var DataStore = Object.assign({}, EventEmitter.prototype, {
   data: initialData,

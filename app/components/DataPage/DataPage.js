@@ -20,8 +20,8 @@ export default class DataPage extends DataElement {
   }
   componentWillReceiveProps(props) {
     if (this.props.params.id !== props.params.id) {
-      if (!this.state.dataStore[this.props.params.id]) {
-        DataActions.requestData(this.props.params.id);
+      if (!this.state.dataStore[props.params.id]) {
+        DataActions.requestData(props.params.id);
       }
     }
   }

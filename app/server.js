@@ -24,16 +24,22 @@ const blogIndex = JSON.parse(fs.readFileSync('./data/blogIndex.json'));
 var dataCache = {
 };
 
+// generate memory cache
 fs.readdirSync('./data/').forEach(file => {
   let contents = fs.readFileSync(path.join('./data/', file), {encoding: 'utf8'});
-  let content = fm(contents);
+  let content;
   let ext = path.extname(file);
   switch(ext) {
     case '.md':
+      content = fm(contents);
       content.body = marked(content.body);
       break;
     case '.jade':
+      content = fm(contents);
       content.body = jade.render(content.body, null, '  ');
+      break;
+    case '.json':
+      content = JSON.parse(contents);
       break;
   }
   let id = path.basename(file, ext);
@@ -44,6 +50,11 @@ function isomorphicRequest(req, res, next) {
   if (!req.initialData) {
     req.initialData = {};
   }
+
+  if (!req.dataContext) {
+    req.dataContext = [];
+  }
+
   req.initialData.blogIndex = blogIndex;
   DataStore.data = req.initialData;
 
@@ -53,7 +64,8 @@ function isomorphicRequest(req, res, next) {
         body,
         description: '',
         css: status.css.join('\n'),
-        initialData: req.initialData ? JSON.stringify(req.initialData) : null,
+        /*initialData: req.initialData ? JSON.stringify(req.initialData) : null,*/
+        dataContext: JSON.stringify(req.dataContext),
         pageTitle: status.pageTitle
       };
 
@@ -70,6 +82,51 @@ function isomorphicRequest(req, res, next) {
     }
   })
 }
+
+// '/data/:id'
+function apiRequest(req, res, next) {
+  getData(req.params.id).then(data => {
+    res.send(data);
+  }).catch(err => {
+    res.status(404).end();
+  })
+}
+
+// '/:id'
+function initialDataMiddleware(req, res, next) {
+  if (app.staticPaths.indexOf(req.params.id) !== -1) {
+    next();
+  }
+
+  getData(req.params.id).then(data => {
+    var initial = {};
+
+    if (!req.dataContext) {
+      req.dataContext = [];
+    }
+
+    req.dataContext.push(req.params.id);
+
+    initial[data.id] = data.value;
+    req.initialData = initial;
+    next();
+  }).catch(err => {
+    if (err !== 'not found' && err.stack) {
+      console.log('er', err.stack)
+    }
+    var initial = {};
+    initial[req.params.id] = null;
+    req.initialData = initial;
+    req.notFound = true;
+    next();
+  });
+}
+
+server.get(/^\/$|^\/index\.html/, isomorphicRequest);
+server.get('/data/:id', apiRequest);
+server.use(express.static('public'));
+server.get('/:id', initialDataMiddleware);
+server.get('*', isomorphicRequest);
 
 // simulates a database dictionary or document
 function getData(id) {
@@ -88,38 +145,6 @@ function getData(id) {
     }, 200);
   })
 }
-
-server.get(/^\/$|^\/index\.html/, isomorphicRequest);
-server.get('/data/:id', (req, res, next) => {
-  getData(req.params.id).then(data => {
-    res.send(data);
-  }).catch(err => {
-    res.status(404).end();
-  })
-});
-server.use(express.static('public'));
-server.get('/:id', (req, res, next) => {
-  if (app.staticPaths.indexOf(req.params.id) !== -1) {
-    next();
-  }
-
-  getData(req.params.id).then(data => {
-    var initial = {};
-    initial[data.id] = data.value;
-    req.initialData = initial;
-    next();
-  }).catch(err => {
-    if (err !== 'not found' && err.stack) {
-      console.log('er', err.stack)
-    }
-    var initial = {};
-    initial[req.params.id] = null;
-    req.initialData = initial;
-    req.notFound = true;
-    next();
-  });
-});
-server.get('*', isomorphicRequest);
 
 server.listen(server.get('port'), () => {
   if (process.send) {

@@ -6,6 +6,7 @@ import Router, {DefaultRoute, Route, NotFoundRoute} from 'react-router';
 import AppDispatcher from './AppDispatcher.js';
 import DataStore from './store/DataStore.js';
 import ActionTypes from './constants/ActionTypes.js';
+import DataActions from './actions/DataActions.js'
 
 import App from "./components/App/App.js"
 import AsyncElement from "./helpers/AsyncElement.js"
@@ -67,12 +68,39 @@ export function render(path, cb) {
   })
 }
 
+
 if (canUseDOM) {
-  Router.run(routes, Router.HistoryLocation, Root => {
-    window.GLOBAL = {};
-    GLOBAL.app_callbacks = {
+  window.GLOBAL = {
+    app_callbacks: {
       onSetTitle: title => document.title = title
-    };
-    React.render(<Root />, document.getElementById('container'));
+    }
+  };
+  var FastClick = require('fastclick');
+
+  let promises = [
+    new Promise(resolve => {
+      if (window.addEventListener) {
+        window.addEventListener('DOMContentLoaded', resolve);
+      } else {
+        window.attachEvent('onload', resolve);
+      }
+    }).then(() => FastClick.attach(document.body)),
+
+    new Promise(resolve => {
+      DataActions.requestData('blogIndex', resolve);
+    })
+  ];
+
+  promises = promises.concat(appFluxInitialDataContext.map(id => {
+    return new Promise(resolve => {
+      DataActions.requestData(id, resolve);
+    });
+  }));
+
+  Promise.all(promises).then(() => {
+    Router.run(routes, Router.HistoryLocation, Root => {
+      React.render(<Root />, document.getElementById('container'));
+    });
   });
+
 }
