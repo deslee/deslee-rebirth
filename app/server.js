@@ -24,6 +24,14 @@ const blogIndex = JSON.parse(fs.readFileSync('./data/blogIndex.json'));
 var dataCache = {
 };
 
+function encodeQueryData(data)
+{
+  var ret = [];
+  for (var d in data)
+    ret.push(encodeURIComponent(d) + "=" + encodeURIComponent(data[d]));
+  return ret.join("&");
+}
+
 // generate memory cache
 fs.readdirSync('./data/').forEach(file => {
   let contents = fs.readFileSync(path.join('./data/', file), {encoding: 'utf8'});
@@ -57,8 +65,7 @@ function isomorphicRequest(req, res, next) {
 
   req.initialData.blogIndex = blogIndex;
   DataStore.data = req.initialData;
-
-  app.render(req.path, (body, status) => {
+  app.render(req.path + '?' + encodeQueryData(req.query), (body, status) => {
     try {
       let data = {
         body,

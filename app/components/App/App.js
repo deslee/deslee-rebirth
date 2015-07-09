@@ -14,20 +14,21 @@ class App extends React.Component {
     this.props.transitionTo('index');
   }
   render() {
-    return (<div className="AppPage flex flex-column flex-auto">
-      <div className="md-flex flex-grow">
+    return (<div className="AppPage flex col-12 flex-column">
+      <div className="content md-flex flex-grow">
+
         <div className="sidebar">
           <img className="hover-pointer circle block mx-auto face" src="assets/face.jpg" onClick={this.goToIndex.bind(this)} />
           <h1 className="hover-pointer" onClick={this.goToIndex.bind(this)} >Desmond Lee</h1>
           <Navigation />
         </div>
 
-        <div className="main flex-auto">
+        <div className="main">
           <RouteHandler {...this.props} />
         </div>
-      </div>
 
-      <div className="right-align dark-gray bg-darken-1 m0 px2 py1">© {moment().format('YYYY')} Desmond Lee</div>
+      </div>
+      <div className="footer right-align dark-gray bg-darken-1 m0 px2 py1">© {moment().format('YYYY')} Desmond Lee</div>
     </div>)
   }
 }

@@ -12,7 +12,7 @@ import App from "./components/App/App.js"
 import AsyncElement from "./helpers/AsyncElement.js"
 
 import IndexPage from "./components/IndexPage/IndexPage.js"
-import ExamplePage from "./components/ExamplePage/ExamplePage.js"
+import AboutMePage from "./components/AboutMePage/AboutMePage.js"
 import DataPage from "./components/DataPage/DataPage.js"
 import NotFoundPage from "./components/NotFoundPage/NotFoundPage.js"
 import TagsPage from "./components/TagsPage/TagsPage.js"
@@ -30,7 +30,7 @@ class LazyExamplePage extends AsyncElement {
 var routes = (
   <Route handler={App} path="/">
     <DefaultRoute name="index" handler={IndexPage} />
-    <Route name="example-basic" path="example-basic" handler={ExamplePage} />
+    <route name="about" path="about" handler={AboutMePage} />
     <Route name="example-lazy" path="example-lazy" handler={LazyExamplePage} />
     <Route name="tags-page" path="tags/:tags" handler={TagsPage} />
     <Route name="data" path=":id" handler={DataPage} />

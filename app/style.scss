@@ -38,4 +38,12 @@ a {
 
 pre {
   overflow-x: auto;
+  padding: 1em;
+  background-color: #efefef;
+  border-radius: .5em;
+}
+
+code, pre, samp {
+  font-family: Inconsolata, monospace;
+  background-color: #efefef;
 }
