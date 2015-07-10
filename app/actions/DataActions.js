@@ -42,6 +42,7 @@ export default {
           let isValidJson = (res && res.text && /^[\],:{}\s]*$/.test(res.text.replace(/\\["\\\/bfnrtu]/g, '@').
             replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']').
             replace(/(?:^|:|,)(?:\s*\[)+/g, '')));
+
           AppDispatcher.handleServerAction({
             type: ActionTypes.RECEIVE_DATA,
             err,

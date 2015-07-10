@@ -11,14 +11,17 @@ import gulp from 'gulp';
 import loadPlugins from 'gulp-load-plugins';
 import runSequence from 'run-sequence';
 import del from 'del';
+import browserify from 'browserify';
+import watchify from 'watchify';
 import mkdirp from 'mkdirp';
-import webpack from 'webpack';
 import path from 'path';
 import through from 'through2';
 import fm from 'front-matter';
 import fs from 'fs';
 import vinylMap from 'vinyl-map';
-
+import source from 'vinyl-source-stream';
+import babelify from 'babelify';
+import buffer from 'vinyl-buffer';
 const $ = loadPlugins();
 const src = Object.create(null);
 
@@ -28,6 +31,24 @@ const APP_DIR = './app';
 const DEBUG = process.env.NODE_ENV !== 'production';
 
 var watch_array = [];
+const external_modules = [
+  'react/addons',
+  'react/lib/keyMirror',
+  'react/lib/invariant',
+  'react/lib/ExecutionEnvironment',
+  'react',
+  'react-router',
+  'flux',
+  'underscore',
+  'superagent',
+  'eventemitter3',
+  'lodash',
+  'underscore',
+  'fastclick',
+  'route-parser',
+  'moment'
+];
+
 function watch(pattern, tasks) {
   watch_array.push({
     pattern,
@@ -43,40 +64,49 @@ gulp.task('clean', done => {
   });
 });
 
-gulp.task('bundle', cb => {
-  const configGenerator = require('./config/webpack.js');
-  let config = configGenerator(!DEBUG);
-  const compiler = webpack(config);
+gulp.task('bundle:vendors', () => {
+  var b = browserify({
+    debug: DEBUG,
+    entries: ['./app/vendor.js']
+  });
 
-  var statReport = (err, stats) => {
-    let verbose = DEBUG;
+  b.require(external_modules);
 
-    // print stats
-    console.log(stats.toString({
-      colors: $.util.colors.supportsColor,
-      hash: verbose,
-      version: verbose,
-      timings: verbose,
-      chunks: verbose,
-      chunkModules: verbose,
-      cached: verbose,
-      cachedAssets: verbose
-    }));
+  return b.bundle()
+    .pipe(source('./app/vendor.js'))
+    /*.pipe(buffer())*/
+    /*.pipe($.uglify())*/
+    .on('error', $.util.log)
+    .pipe(gulp.dest('./build/public'));
+});
 
-    if(cb) {
-      cb();
-      cb = null;
-    }
-  };
+gulp.task('bundle', () => {
+  var b = watchify(browserify(Object.assign({
+    debug: DEBUG,
+    entries: ['./app/main.js'],
+    transform: [babelify],
+    bundleExternal: false
+  }, watchify.args)));
 
-  if (DEBUG) {
-    compiler.watch({
-      aggregateTimeout: 100
-    }, statReport);
-  }
-  else {
-    compiler.run(statReport);
-  }
+  b.on('update', () => {
+    runSequence(['bundle'])
+  });
+  b.on('log', $.util.log);
+  b.on('prebundle', function prebundle(b) {
+    return external_modules.forEach(external => {
+        b = b.external(external)
+      });
+  });
+
+  return b.bundle()
+    .pipe(source('./app/app.js'))
+    .pipe(buffer())
+    /*.pipe(sourcemaps.init({loadMaps: true}))*/
+    // Add transformation tasks to the pipeline here.
+    .pipe($.uglify())
+    .on('error', $.util.log)
+    /*.pipe(sourcemaps.write('./'))*/
+    .pipe(gulp.dest('./build/public'));
 });
 
 gulp.task('move:favicon', () => {
@@ -138,13 +168,6 @@ gulp.task('move:index', () => {
   watch(src.blog, ['move:index']);
 
   return gulp.src(src.index)
-    /*.pipe(vinylMap((code, fileName) => {
-      code = code.toString();
-      let json = JSON.stringify(blogIndex);
-      var idx = code.indexOf('<body>') + '<body>'.length;
-      code = code.substring(0, idx) + `\n<div id="blogIndex" data-blogIndex='${json}'></div>` + code.slice(idx);
-      return code
-    }))*/
     .pipe(gulp.dest(PUBLIC_DIR));
 });
 
@@ -174,42 +197,12 @@ gulp.task('watch', cb => {
   cb();
 });
 
-gulp.task('data', cb => {
-  var index = [];
-  src.blog = 'data*/**';
-  gulp.src(src.blog)
-    .pipe(through.obj(function(chunk, enc, callback) {
-      if(chunk.isBuffer()) {
-        var isBlog = chunk.relative.split(path.sep).length >= 2 ? chunk.relative.split(path.sep)[1].toLowerCase() === 'blog' : false;
-        let contents = chunk.contents.toString('utf8');
-        let metadata = fm(contents);
-        var data = Object.assign({slug: path.basename(chunk.path).split('.')[0], blog: isBlog}, metadata.attributes);
-        if (!metadata.attributes.draft) {
-          this.push(data)
-        }
-      }
-      callback()
-    }))
-    .on('data', function(data) {
-      index.push(data)
-    })
-    .on('end', function() {
-      let json = JSON.stringify(index);
-      let contents = `
-// gulp generated file
-export default JSON.parse('${json}');
-`;
-      cb();
-      //fs.writeFile('src/content/Blog.js', contents, cb);
-    })
-});
-
 gulp.task('move', done => {
   runSequence(['move:assets', 'move:index', 'move:data', 'move:favicon'], done)
 });
 
 gulp.task('build', cb => {
-  runSequence(['move', 'blogIndex', 'compile:sass', 'bundle', 'data'], cb)
+  runSequence(['move', 'blogIndex', 'compile:sass', 'bundle:vendors', 'bundle'], cb)
 });
 
 gulp.task('default', done => {

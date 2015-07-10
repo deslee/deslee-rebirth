@@ -1,5 +1,4 @@
 'use strict';
-import 'babel/polyfill';
 import React from 'react/addons';
 import Router, {DefaultRoute, Route, NotFoundRoute} from 'react-router';
 
@@ -20,18 +19,10 @@ import TagsPage from "./components/TagsPage/TagsPage.js"
 import { canUseDOM } from '../node_modules/react/lib/ExecutionEnvironment';
 
 
-class LazyExamplePage extends AsyncElement {
-  constructor() {
-    super();
-    this.bundle = require('bundle?lazy!./components/LazyExamplePage/LazyExamplePage.lazy.js');
-  }
-}
-
 var routes = (
   <Route handler={App} path="/">
     <DefaultRoute name="index" handler={IndexPage} />
     <route name="about" path="about" handler={AboutMePage} />
-    <Route name="example-lazy" path="example-lazy" handler={LazyExamplePage} />
     <Route name="tags-page" path="tags/:tags" handler={TagsPage} />
     <Route name="data" path=":id" handler={DataPage} />
     <NotFoundRoute handler={NotFoundPage} />
@@ -58,7 +49,7 @@ export function render(path, cb) {
       GLOBAL.app_callbacks = {
         onPageNotFound: () => pageNotFound = true,
         onInsertCss: value => {
-          css.push(value)
+          css.push(value);
         },
         onSetTitle: title => pageTitle = title
       };
@@ -68,40 +59,54 @@ export function render(path, cb) {
   })
 }
 
-
-if (canUseDOM) {
-  window.GLOBAL = {
-    app_callbacks: {
-      onSetTitle: title => document.title = title
-    }
-  };
-  var FastClick = require('fastclick');
-
-  let promises = [
-    new Promise(resolve => {
-      if (window.addEventListener) {
-        window.addEventListener('DOMContentLoaded', resolve);
-      } else {
-        window.attachEvent('onload', resolve);
+export default function() {
+  if (canUseDOM) {
+    window.GLOBAL = {
+      app_callbacks: {
+        onSetTitle: title => document.title = title
       }
-    }).then(() => FastClick.attach(document.body)),
+    };
 
-    new Promise(resolve => {
-      DataActions.requestData('blogIndex', resolve);
-    })
-  ];
+    let promises = [
+      new Promise(resolve => {
+        if (window.addEventListener) {
+          window.addEventListener('DOMContentLoaded', function() {
+            /*console.log('dom content.')*/
+            resolve();
+          });
+        } else {
+          window.attachEvent('onload', function() {
+            /*console.log("onload")*/
+            resolve();
+          });
+        }
+      }),
 
-  promises = promises.concat(appFluxInitialDataContext.map(id => {
-    return new Promise(resolve => {
-      DataActions.requestData(id, resolve);
+      new Promise(resolve => {
+        DataActions.requestData('blogIndex', function() {
+          /*console.log("got blogIndex");*/
+          resolve();
+        });
+      })
+    ];
+
+    promises = promises.concat(appFluxInitialDataContext.map(id => {
+      return new Promise(resolve => {
+        /*console.log('requesting ' + id)*/
+        DataActions.requestData(id, function() {
+          /*console.log("got " + id);*/
+          resolve();
+        });
+      });
+    }));
+
+    Promise.all(promises).then(() => {
+      /*console.log('router???')*/
+      Router.run(routes, Router.HistoryLocation, Root => {
+        React.render(<Root />, document.getElementById('container'));
+      });
+      DataActions.requestCache();
     });
-  }));
 
-  Promise.all(promises).then(() => {
-    Router.run(routes, Router.HistoryLocation, Root => {
-      React.render(<Root />, document.getElementById('container'));
-    });
-    DataActions.requestCache();
-  });
-
+  }
 }

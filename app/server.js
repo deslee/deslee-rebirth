@@ -1,25 +1,28 @@
 'use strict';
-import 'babel/polyfill';
 import fs from 'fs';
 import _ from 'lodash';
 import path from 'path';
 import fm from 'front-matter';
 import express from 'express';
 import marked from 'marked';
+import bodyParser from 'body-parser';
 import jade from 'jade';
-
 import * as app from './app.js';
 import AppDispatcher from './AppDispatcher.js';
 import ActionTypes from './constants/ActionTypes.js';
 import DataStore from './store/DataStore.js';
 
+import {twitterMiddleWare, getTimeline as getTwitterTimeline} from './backend/twitter.js';
+import {emailMiddleWare} from './backend/email.js';
+
 const server = express();
 server.set('port', (process.env.PORT || 5000));
 
-const templateFile = './public/index.html';
+const templateFile = '../build/public/index.html';
 const template = _.template(fs.readFileSync(templateFile, 'utf8'));
 
-const blogIndex = JSON.parse(fs.readFileSync('./data/blogIndex.json'));
+const blogIndex = JSON.parse(fs.readFileSync('../build/data/blogIndex.json'));
+
 
 var dataCache = {
 };
@@ -33,8 +36,8 @@ function encodeQueryData(data)
 }
 
 // generate memory cache
-fs.readdirSync('./data/').forEach(file => {
-  let contents = fs.readFileSync(path.join('./data/', file), {encoding: 'utf8'});
+fs.readdirSync('../build/data/').forEach(file => {
+  let contents = fs.readFileSync(path.join('../build/data/', file), {encoding: 'utf8'});
   let content;
   let ext = path.extname(file);
   switch(ext) {
@@ -54,7 +57,7 @@ fs.readdirSync('./data/').forEach(file => {
   dataCache[id] = content;
 });
 
-function isomorphicRequest(req, res, next) {
+async function isomorphicRequest(req, res, next) {
   if (!req.initialData) {
     req.initialData = {};
   }
@@ -63,7 +66,12 @@ function isomorphicRequest(req, res, next) {
     req.dataContext = [];
   }
 
+  req.dataContext.push('twitter');
+
+  var tweets = await getTwitterTimeline();
+
   req.initialData.blogIndex = blogIndex;
+  req.initialData.twitter = tweets;
   DataStore.data = req.initialData;
 
   app.render(req.path + (Boolean(Object.keys(req.query).length) ? '?' : '') + encodeQueryData(req.query), (body, status) => {
@@ -74,6 +82,7 @@ function isomorphicRequest(req, res, next) {
         css: status.css.join('\n'),
         /*initialData: req.initialData ? JSON.stringify(req.initialData) : null,*/
         dataContext: JSON.stringify(req.dataContext),
+        /*tweets: JSON.stringify(tweets),*/
         pageTitle: status.pageTitle
       };
 
@@ -135,9 +144,12 @@ function initialDataMiddleware(req, res, next) {
   });
 }
 
+server.use(bodyParser());
 server.get(/^\/$|^\/index\.html/, isomorphicRequest);
+server.get('/data/twitter', twitterMiddleWare('twitter'));
+server.post('/send_email', emailMiddleWare);
 server.get('/data/:id', apiRequest);
-server.use(express.static('public'));
+server.use(express.static('../build/public'));
 server.get('/:id', initialDataMiddleware);
 server.get('*', isomorphicRequest);
 

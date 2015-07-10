@@ -1,12 +1,12 @@
 import React from 'react/addons';
 import {Link} from 'react-router';
-import styles from './Navigation.scss';
-import withStyles from '../../decorators/withStyles.js';
+/*import styles from './Navigation.scss';
+import withStyles from '../../decorators/withStyles.js';*/
 
 
 /*<li className="nav-item"><Link to="data" params={{id: 'projects'}}>Projects</Link></li>*/
 
-@withStyles(styles)
+/*@withStyles(styles)*/
 class Navigation extends React.Component {
   render() {
     return (<nav><ul className="list-reset">

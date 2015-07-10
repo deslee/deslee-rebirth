@@ -1,9 +1,9 @@
 import React from 'react/addons';
 import {Link} from 'react-router';
-import styles from './AboutMePage.scss';
+/*import styles from './AboutMePage.scss';
 import withStyles from '../../decorators/withStyles.js';
 
-@withStyles(styles)
+@withStyles(styles)*/
 class ExamplePage extends React.Component {
   componentWillMount() {
     GLOBAL.app_callbacks.onSetTitle("About Desmond Lee");

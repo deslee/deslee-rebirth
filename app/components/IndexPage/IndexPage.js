@@ -4,10 +4,14 @@ import PostsPage from '../PostsPage/PostsPage.js';
 import DataStore from '../../store/DataStore.js';
 import DataElement from '../../helpers/DataElement.js';
 import DataActions from '../../actions/DataActions.js';
+/*
 import styles from './IndexPage.scss';
+*/
 import withStyles from '../../decorators/withStyles.js';
 
+/*
 @withStyles(styles)
+*/
 class IndexPage extends DataElement {
   constructor() {
     super();

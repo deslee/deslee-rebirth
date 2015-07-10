@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react/addons';
 import {Link} from 'react-router';
 
-import styles from './Tag.scss';
+/*import styles from './Tag.scss';
 import withStyles from '../../decorators/withStyles.js';
 
-@withStyles(styles)
+@withStyles(styles)*/
 class Tags {
   static propTypes = {
     tags: PropTypes.array.isRequired

@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react/addons';
 import {Link} from 'react-router';
 
-import styles from './Loading.scss';
+/*import styles from './Loading.scss';
 import withStyles from '../../decorators/withStyles.js';
 
-@withStyles(styles)
+@withStyles(styles)*/
 class Loading extends React.Component {
   constructor() {
     super();

@@ -1,7 +1,7 @@
 /*! React Starter Kit | MIT License | http://www.reactstarterkit.com/ */
 
 import React, { PropTypes } from 'react';
-import styles from './TagsPage.scss';
+/*import styles from './TagsPage.scss';*/
 import PostsPage from '../PostsPage/PostsPage.js';
 import DataStore from '../../store/DataStore.js';
 

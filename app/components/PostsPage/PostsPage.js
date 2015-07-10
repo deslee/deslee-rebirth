@@ -2,10 +2,10 @@ import React, { PropTypes } from 'react/addons';
 import {Link} from 'react-router';
 import moment from 'moment';
 import Tags from "../Tags/Tags.js";
-import styles from './PostsPage.scss';
+/*import styles from './PostsPage.scss';
 import withStyles from '../../decorators/withStyles.js';
 
-@withStyles(styles)
+@withStyles(styles)*/
 class PostsPage {
   static propTypes = {
     posts: PropTypes.array.isRequired

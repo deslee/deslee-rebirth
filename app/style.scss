@@ -56,6 +56,10 @@ html, body, #container, .AppPage {
   min-height: 100vh;
 }
 
+body {
+  overflow-y: scroll;
+}
+
 code, pre, samp {
   font-family: 'Cutive Mono', monospace;
 }
@@ -96,6 +100,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .mw30 {
   max-width: 30em;
+}
+
+.w15 {
+  width: 15em;
 }
 
 .fc-border-top {
@@ -164,6 +172,9 @@ h1, h2, h3, h4, h5, h6 {
   }
   .xl-m0 {
     margin: 0;
+  }
+  .xl-hide {
+    display: none;
   }
 }
 

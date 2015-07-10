@@ -115,6 +115,7 @@ export default function(release) {
     output: {
       path: './build',
       filename: 'server.js',
+      libraryTarget: "commonjs2"
     },
     externals: nodeModules,
     plugins: [
