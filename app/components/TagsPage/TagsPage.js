@@ -16,7 +16,7 @@ class TagsPage {
       <h1>Posts tagged with "{this.props.params.tags}"</h1>
       <PostsPage posts={DataStore.getData('blogIndex').filter(post => {
         return post.tags.find(tag => {
-          return this.props.params.tags.split(',').includes(tag)
+          return this.props.params.tags.split(',').indexOf(tag) !== -1
         })
       })} />
     </section>);

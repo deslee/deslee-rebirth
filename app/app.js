@@ -15,6 +15,7 @@ import AboutMePage from "./components/AboutMePage/AboutMePage.js"
 import DataPage from "./components/DataPage/DataPage.js"
 import NotFoundPage from "./components/NotFoundPage/NotFoundPage.js"
 import TagsPage from "./components/TagsPage/TagsPage.js"
+import EmailSentPage from "./components/EmailSentPage/EmailSentPage.js"
 
 import { canUseDOM } from '../node_modules/react/lib/ExecutionEnvironment';
 
@@ -22,7 +23,8 @@ import { canUseDOM } from '../node_modules/react/lib/ExecutionEnvironment';
 var routes = (
   <Route handler={App} path="/">
     <DefaultRoute name="index" handler={IndexPage} />
-    <route name="about" path="about" handler={AboutMePage} />
+    <Route name="about" path="about" handler={AboutMePage} />
+    <Route name="email-sent" path="email-sent" handler={EmailSentPage} />
     <Route name="tags-page" path="tags/:tags" handler={TagsPage} />
     <Route name="data" path=":id" handler={DataPage} />
     <NotFoundRoute handler={NotFoundPage} />
@@ -49,7 +51,7 @@ export function render(path, cb) {
       GLOBAL.app_callbacks = {
         onPageNotFound: () => pageNotFound = true,
         onInsertCss: value => {
-          css.push(value);
+          css.push(value)
         },
         onSetTitle: title => pageTitle = title
       };
@@ -60,6 +62,7 @@ export function render(path, cb) {
 }
 
 export default function() {
+
   if (canUseDOM) {
     window.GLOBAL = {
       app_callbacks: {
@@ -71,12 +74,10 @@ export default function() {
       new Promise(resolve => {
         if (window.addEventListener) {
           window.addEventListener('DOMContentLoaded', function() {
-            /*console.log('dom content.')*/
             resolve();
           });
         } else {
           window.attachEvent('onload', function() {
-            /*console.log("onload")*/
             resolve();
           });
         }
@@ -84,7 +85,6 @@ export default function() {
 
       new Promise(resolve => {
         DataActions.requestData('blogIndex', function() {
-          /*console.log("got blogIndex");*/
           resolve();
         });
       })
@@ -92,16 +92,13 @@ export default function() {
 
     promises = promises.concat(appFluxInitialDataContext.map(id => {
       return new Promise(resolve => {
-        /*console.log('requesting ' + id)*/
         DataActions.requestData(id, function() {
-          /*console.log("got " + id);*/
           resolve();
         });
       });
     }));
 
     Promise.all(promises).then(() => {
-      /*console.log('router???')*/
       Router.run(routes, Router.HistoryLocation, Root => {
         React.render(<Root />, document.getElementById('container'));
       });

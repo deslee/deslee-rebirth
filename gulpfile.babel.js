@@ -74,9 +74,11 @@ gulp.task('bundle:vendors', () => {
 
   return b.bundle()
     .pipe(source('./app/vendor.js'))
-    /*.pipe(buffer())*/
-    /*.pipe($.uglify())*/
+    .pipe(buffer())
+    .pipe($.sourcemaps.init({loadMaps: true}))
+    .pipe($.uglify())
     .on('error', $.util.log)
+    .pipe($.sourcemaps.write('./'))
     .pipe(gulp.dest('./build/public'));
 });
 
@@ -101,11 +103,11 @@ gulp.task('bundle', () => {
   return b.bundle()
     .pipe(source('./app/app.js'))
     .pipe(buffer())
-    /*.pipe(sourcemaps.init({loadMaps: true}))*/
+    .pipe($.sourcemaps.init({loadMaps: true}))
     // Add transformation tasks to the pipeline here.
     .pipe($.uglify())
     .on('error', $.util.log)
-    /*.pipe(sourcemaps.write('./'))*/
+    .pipe($.sourcemaps.write('./'))
     .pipe(gulp.dest('./build/public'));
 });
 
@@ -185,8 +187,6 @@ gulp.task('compile:sass', () => {
   if (!DEBUG) {
     stream = stream.pipe($.minifyCss())
   }
-
-
   return stream.pipe(gulp.dest(PUBLIC_DIR));
 });
 

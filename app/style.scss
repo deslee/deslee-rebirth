@@ -1,48 +1,3 @@
-/*
-@import "styles/fonts";
-
-
-html {
-  color: #000;
-}
-
-html, body, #container {
-  min-height: 100vh;
-}
-
-body {
-  font-family: 'Open Sans', sans-serif;
-  font-weight: 300;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: "Roboto Slab", serif;
-  font-weight: 300;
-}
-
-a {
-  color: #0074d9;
-  &:hover {
-    text-decoration: none;
-  }
-}
-
-.dark-gray {
-  color: #888;
-}
-
-pre {
-  overflow-x: auto;
-  padding: 1em;
-  background-color: #efefef;
-  border-radius: .5em;
-}
-
-code, pre, samp {
-  font-family: Inconsolata, monospace;
-  background-color: #efefef;
-}*/
-
 @import "styles/fonts";
 $breakpoint-lg: '(min-width: 75em)';
 $sidebar-width: 15em;
@@ -70,6 +25,14 @@ code, samp {
 .hover-pointer {
   &:hover {
     cursor: pointer;
+  }
+}
+
+.post {
+  padding-bottom: 1.75em;
+  &:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
   }
 }
 
@@ -150,11 +113,23 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 @media #{$breakpoint-lg} {
+  .lg-w15 {
+    width: 15em;
+  }
   .lg-w45 {
     width: 45em;
   }
   .lg-w60 {
     width: 60em;
+  }
+  .lg-w75 {
+    width: 75em;
+  }
+  .lg-hide {
+    display: none;
+  }
+  .lg-m0 {
+    margin: 0;
   }
 }
 @media #{$breakpoint-xl} {
@@ -181,8 +156,8 @@ h1, h2, h3, h4, h5, h6 {
 nav {
   a {
     &:hover {
-      background: $navy;
-      color: $white;
+      background: $silver;
+      color: $navy;
     }
     @media #{$breakpoint-md} {
       &:hover {

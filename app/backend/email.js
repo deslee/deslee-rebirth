@@ -11,8 +11,12 @@ export function emailMiddleWare(req, res, next) {
       subject: 'Received a message from your website!',
       text: `The sent message is:\n\n${req.body.message}`,
       from: req.body.email
-    }).end((err, res) => {
+    }).end((err, result) => {
+      if (!err) {
+        res.send('Success');
+      } else {
+        res.send("Error")
+      }
       console.log(res.text)
     });
-  res.send('message sent');
 }

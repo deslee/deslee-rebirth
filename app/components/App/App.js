@@ -22,7 +22,7 @@ class App extends React.Component {
   }
   render() {
     /*console.log("rendering app")*/
-    return (<div className="AppPage black mx-auto flex flex-column md-w52 lg-w60 xl-w75">
+    return (<div className="AppPage black mx-auto flex flex-column md-w52 lg-w75">
       <div className="content clearfix flex-grow">
 
         <div className="sidebar p2 col col-12 center md-left-align md-w15">
@@ -31,6 +31,8 @@ class App extends React.Component {
             <h1 className="hover-pointer" onClick={this.goToIndex.bind(this)} >Desmond Lee</h1>
           </header>
           <Navigation />
+          <p>This is my personal website.</p>
+          <p>I'm a Software Engineer based in Dallas. Check out my <Link to="about">about</Link> page!</p>
         </div>
 
         <main className="main p2 col col-12 md-w36 lg-w45 break-word">

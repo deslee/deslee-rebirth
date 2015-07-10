@@ -5,12 +5,41 @@ import DataElement from '../../helpers/DataElement.js';
 import DataStore from '../../store/DataStore.js';
 import DataActions from '../../actions/DataActions.js';
 
+import http from 'superagent';
+
 class Aside extends DataElement {
   componentWillMount() {
     super.componentWillMount();
     if (!this.state.dataStore.twitter) {
       DataActions.requestData('twitter');
     }
+  }
+  send_email(e) {
+    e.preventDefault();
+    var email = this.refs.email.getDOMNode().value.trim();
+    var message = this.refs.message.getDOMNode().value.trim();
+
+    console.log(email, message)
+
+    if (!message || ! email) {
+      return;
+    }
+
+    http.post('send_email')
+    .type('form')
+    .send({
+        email, message
+    }).end((err, res) => {
+        if (!err) {
+          React.findDOMNode(this.refs.email).value = '';
+          React.findDOMNode(this.refs.message).value = '';
+          alert("Email sent");
+        }
+        else {
+          console.log(err);
+          alert("Could not send email");
+        }
+    });
   }
   render() {
     var tweets = <p>loading</p>;
@@ -39,28 +68,28 @@ class Aside extends DataElement {
         })
     }
 
-    return (<aside className="mt3 xl-m0 pt2 pb2 col col-12 xl-w15 clearfix">
-      <hr className="xl-hide mb3" />
+    return (<aside className="mt3 lg-m0 pt2 pb2 col col-12 lg-w15 clearfix">
+      <hr className="lg-hide mb3" />
 
-      <div className={'px2 col col-12 md-col-4 xl-col-12'}>
+      <div className={'px2 col col-12 md-col-4 lg-col-12'}>
         <h2 className="">Contact me.</h2>
-        <form action="send_email" method="post" className="mb2">
+        <form action="send_email" method="post" className="mb2" onSubmit={this.send_email.bind(this)}>
           <label htmlFor="email" className="block col-12">Your Email</label>
-          <input name="email" id="email" type="text" className="field mb1 block col-12" />
+          <input ref="email" name="email" id="email" type="email" className="field mb1 block col-12" />
           <label htmlFor="message">Message</label>
-          <textarea name="message" id="message" className="field mb2 block col-12"></textarea>
+          <textarea ref="message" name="message" id="message" className="field mb2 block col-12"></textarea>
           <input type="submit" className="btn btn-primary" />
         </form>
       </div>
 
-      <div className={'px2 col col-12 md-col-4 xl-col-12'} >
+      <div className={'px2 col col-12 md-col-4 lg-col-12'} >
         <h2 className="">Cool things</h2>
         <ul className="clearfix nowrap list-reset m0">
           <li className="col col-12 sm-col-4 md-col-12 pr2 mb2"><a href="https://play.google.com/store/apps/details?id=com.ionicframework.superwinner746062&hl=en">Superwinner</a></li>
         </ul>
       </div>
 
-      <div className={'px2 col col-12 md-col-4 xl-col-12'}>
+      <div className={'px2 col col-12 md-col-4 lg-col-12'}>
         <h2 className="">Friends</h2>
         <ul className="clearfix nowrap list-reset m0">
           <li className="col col-12 sm-col-4 md-col-12 pr2 mb2"><a href="http://elizabethdelrosario.com/">Elizabeth Del Rosario</a></li>

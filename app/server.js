@@ -145,9 +145,9 @@ function initialDataMiddleware(req, res, next) {
 }
 
 server.use(bodyParser());
+server.post('/send_email', emailMiddleWare);
 server.get(/^\/$|^\/index\.html/, isomorphicRequest);
 server.get('/data/twitter', twitterMiddleWare('twitter'));
-server.post('/send_email', emailMiddleWare);
 server.get('/data/:id', apiRequest);
 server.use(express.static('../build/public'));
 server.get('/:id', initialDataMiddleware);
