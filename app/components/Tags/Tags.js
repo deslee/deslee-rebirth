@@ -13,7 +13,7 @@ class Tags {
   render() {
     var tags = this.props.tags;
     var tagList = tags ? tags.map(function (tag) {
-      return <li className="inline" key={tag}><Link className="tag dark-gray bg-darken-1 px1 mr1 rounded" to="tags-page" params={{tags: tag}}>{tag}</Link></li>;
+      return <li className="inline" key={tag}><Link className="tag silver navy bg-darken-1 px1 mr1 rounded" to="tags-page" params={{tags: tag}}>{tag}</Link></li>;
     }) : null;
     return (<ul className="tags p0 inline">
           {tagList}

@@ -1,3 +1,4 @@
+/*
 @import "styles/fonts";
 
 
@@ -26,12 +27,6 @@ a {
   }
 }
 
-.hover-pointer {
-  &:hover {
-    cursor: pointer;
-  }
-}
-
 .dark-gray {
   color: #888;
 }
@@ -46,4 +41,143 @@ pre {
 code, pre, samp {
   font-family: Inconsolata, monospace;
   background-color: #efefef;
+}*/
+
+@import "styles/fonts";
+$breakpoint-lg: '(min-width: 75em)';
+$sidebar-width: 15em;
+/*$main-color: #e74c3c;
+$link-color: $main-color;
+$button-background-color: $main-color;*/
+@import "../node_modules/basscss-sass/basscss";
+
+
+html, body, #container, .AppPage {
+  min-height: 100vh;
+}
+
+code, pre, samp {
+  font-family: 'Cutive Mono', monospace;
+}
+
+code, samp {
+}
+
+.hover-pointer {
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+pre {
+  background-color: #efefef;
+  overflow-x: auto;
+  padding: 1em;
+  border-radius: .5em;
+}
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Roboto Slab', serif;
+  font-weight: 300;
+}
+
+.mw9 {
+  max-width: 9em;
+}
+
+.mt3 {
+  margin-top: 3em;
+}
+
+.mw30 {
+  max-width: 30em;
+}
+
+.fc-border-top {
+  &:first-child {
+    border-top: 1px solid $border-color;
+  }
+}
+
+.border-bottom {
+  border-bottom: 1px solid $border-color;
+}
+
+nav {
+  a {
+    &:hover {
+      background: $navy;
+      color: $white;
+    }
+    @media #{$breakpoint-md} {
+      &:hover {
+        background: inherit;
+        color: inherit;
+      }
+    }
+  }
+}
+
+@media #{$breakpoint-sm} {
+}
+@media #{$breakpoint-md} {
+  .md-left-align {
+    text-align: left;
+  }
+  .md-w15 {
+    width: 15em;
+  }
+  .md-w36 {
+    width: 36em;
+  }
+  .md-w52 {
+    width: 52em;
+  }
+  .md-no-border {
+    border: 0;
+  }
+  .md-fc-no-border {
+    &:first-child {
+      border: 0;
+    }
+  }
+  .md-inline {
+    display: inline;
+  }
+  .md-p0 {
+    padding: 0;
+  }
+  .md-p1 {
+    padding: 1em;
+  }
+}
+@media #{$breakpoint-lg} {
+  .lg-w45 {
+    width: 45em;
+  }
+  .lg-w60 {
+    width: 60em;
+  }
+}
+@media #{$breakpoint-xl} {
+  .xl-w15 {
+    width: 15em;
+  }
+  .xl-w36 {
+    width: 36em;
+  }
+  .xl-w75 {
+    width: 75em;
+  }
+  .xl-col-12 {
+    width: 100%;
+  }
+  .xl-m0 {
+    margin: 0;
+  }
 }

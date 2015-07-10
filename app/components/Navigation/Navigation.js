@@ -9,10 +9,10 @@ import withStyles from '../../decorators/withStyles.js';
 @withStyles(styles)
 class Navigation extends React.Component {
   render() {
-    return (<ul className="navigation p0">
-      <li className="nav-item"><Link to="index">Home</Link></li>
-      <li className="nav-item"><Link to="data" params={{id: 'about'}}>About</Link></li>
-    </ul>)
+    return (<nav><ul className="list-reset">
+      <li className="mx-auto fc-border-top border-bottom md-no-border md-fc-no-border"><Link className="block p1 md-p0 md-inline" to="index">Home</Link></li>
+      <li className="mx-auto fc-border-top border-bottom md-no-border md-fc-no-border"><Link className="block p1 md-p0 md-inline" to="data" params={{id: 'about'}}>About</Link></li>
+    </ul></nav>)
   }
 }
 

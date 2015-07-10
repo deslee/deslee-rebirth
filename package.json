@@ -3,11 +3,12 @@
   "version": "0.0.0",
   "dependencies": {
     "basscss": "^7.0.0",
+    "basscss-sass": "^2.0.0",
     "eventemitter3": "^1.1.1",
     "express": "^4.13.1",
     "fastclick": "^1.0.6",
-    "front-matter": "^1.0.0",
     "flux": "^2.0.3",
+    "front-matter": "^1.0.0",
     "jade": "^1.11.0",
     "lodash": "^3.10.0",
     "marked": "^0.3.3",

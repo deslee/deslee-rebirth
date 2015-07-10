@@ -50,9 +50,9 @@ class ExamplePage extends React.Component {
         </ul>
         <h2>Other technologies I love to use</h2>
         <p>Other technologies I have experience in include:</p>
-        <ul className="clearfix p0 list-reset m0" style={{maxWidth: '35em'}}>
+        <ul className="clearfix nowrap p0 list-reset m0" style={{maxWidth: '35em'}}>
           {['Java', 'C#', 'HTML', 'CSS', 'JavaScript', 'Python', 'SQL'].map(tech => {
-            return <li className="col col-6 sm-col-4 md-col-3 lg-col-2 px2 mb2 center" key={tech}>{tech}</li>
+            return <li className="col col-6 sm-col-4 md-col-3 lg-col-2 px2 mb2" key={tech}>{tech}</li>
           })}
         </ul>
         <h2>Things I want to learn more about</h2>

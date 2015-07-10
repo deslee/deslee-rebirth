@@ -148,11 +148,6 @@ gulp.task('move:index', () => {
     .pipe(gulp.dest(PUBLIC_DIR));
 });
 
-gulp.task('move:css', () => {
-  return gulp.src('node_modules/basscss/css/basscss*.css')
-  .pipe(gulp.dest(path.join(BUILD_DIR, 'public')));
-});
-
 gulp.task('compile:sass', () => {
   src.sass = [
     path.join(APP_DIR, 'style.scss')
@@ -204,7 +199,7 @@ export default JSON.parse('${json}');
 });
 
 gulp.task('move', done => {
-  runSequence(['move:assets', 'move:index', 'move:data', 'move:css', 'move:favicon'], done)
+  runSequence(['move:assets', 'move:index', 'move:data', 'move:favicon'], done)
 });
 
 gulp.task('build', cb => {
