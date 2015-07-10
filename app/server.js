@@ -65,7 +65,8 @@ function isomorphicRequest(req, res, next) {
 
   req.initialData.blogIndex = blogIndex;
   DataStore.data = req.initialData;
-  app.render(req.path + '?' + encodeQueryData(req.query), (body, status) => {
+
+  app.render(req.path + (Boolean(Object.keys(req.query).length) ? '?' : '') + encodeQueryData(req.query), (body, status) => {
     try {
       let data = {
         body,

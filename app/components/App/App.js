@@ -5,8 +5,12 @@ import styles from './App.scss';
 import withStyles from '../../decorators/withStyles.js';
 import Navigation from '../Navigation/Navigation.js';
 import routerNavigation from '../../decorators/routerNavigation.js';
+import routerState from '../../decorators/routerState.js';
 import moment from 'moment';
 
+var CSSTransitionGroup = React.addons.CSSTransitionGroup;
+
+@routerState
 @routerNavigation
 @withStyles(styles)
 class App extends React.Component {
@@ -19,14 +23,14 @@ class App extends React.Component {
 
         <div className="sidebar p2 col col-12 center md-left-align md-w15">
           <header>
-            <img className="hover-pointer circle block mx-auto mt3 mw9" src="assets/face.jpg" onClick={this.goToIndex.bind(this)} />
+            <img className="hover-pointer circle block mx-auto mt1 mw9" src="assets/face.jpg" onClick={this.goToIndex.bind(this)} />
             <h1 className="hover-pointer" onClick={this.goToIndex.bind(this)} >Desmond Lee</h1>
           </header>
           <Navigation />
         </div>
 
         <main className="main p2 col col-12 md-w36 lg-w45 break-word">
-          <RouteHandler {...this.props} />
+          <CSSTransitionGroup transitionName="routeTransition"><RouteHandler {...this.props} key={this.props.getPathname()} /></CSSTransitionGroup>
         </main>
 
         <aside className="mt3 xl-m0 pt2 pb2 col col-12 xl-w15 clearfix">
@@ -37,8 +41,7 @@ class App extends React.Component {
               <label htmlFor="email" className="block col-12">Your Email</label>
               <input id="email" type="text" className="field mb1 block col-12" />
               <label htmlFor="message">Message</label>
-            <textarea id="message" className="field mb1 block col-12">
-            </textarea>
+            <textarea id="message" className="field mb2 block col-12"></textarea>
               <button className="btn btn-primary">Submit</button>
             </form>
           </div>

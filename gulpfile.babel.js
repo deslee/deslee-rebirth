@@ -155,10 +155,16 @@ gulp.task('compile:sass', () => {
 
   watch(src.sass, ['compile:sass']);
 
-  return gulp.src(src.sass)
+  var stream = gulp.src(src.sass)
     .pipe($.plumber())
-    .pipe($.sass())
-    .pipe(gulp.dest(PUBLIC_DIR));
+    .pipe($.sass());
+
+  if (!DEBUG) {
+    stream = stream.pipe($.minifyCss())
+  }
+
+
+  return stream.pipe(gulp.dest(PUBLIC_DIR));
 });
 
 gulp.task('watch', cb => {

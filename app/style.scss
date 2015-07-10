@@ -90,8 +90,8 @@ h1, h2, h3, h4, h5, h6 {
   max-width: 9em;
 }
 
-.mt3 {
-  margin-top: 3em;
+.mt1 {
+  margin-top: 1em;
 }
 
 .mw30 {
@@ -106,21 +106,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .border-bottom {
   border-bottom: 1px solid $border-color;
-}
-
-nav {
-  a {
-    &:hover {
-      background: $navy;
-      color: $white;
-    }
-    @media #{$breakpoint-md} {
-      &:hover {
-        background: inherit;
-        color: inherit;
-      }
-    }
-  }
 }
 
 @media #{$breakpoint-sm} {
@@ -180,4 +165,38 @@ nav {
   .xl-m0 {
     margin: 0;
   }
+}
+
+nav {
+  a {
+    &:hover {
+      background: $navy;
+      color: $white;
+    }
+    @media #{$breakpoint-md} {
+      &:hover {
+        background: inherit;
+        color: inherit;
+      }
+    }
+  }
+}
+
+.routeTransition-enter {
+  opacity: 0.01;
+  transition: opacity 0.15s ease-in;
+}
+
+.routeTransition-enter.routeTransition-enter-active {
+  opacity: 1;
+}
+
+.routeTransition-leave {
+  opacity: 0.1;
+  visibility: hidden;
+  transition: opacity 0.1s ease-in;
+}
+
+.routeTransition-leave.routeTransition-leave-active {
+  opacity: 0.01;
 }
